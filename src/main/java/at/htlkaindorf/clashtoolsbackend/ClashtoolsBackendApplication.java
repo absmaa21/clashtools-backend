@@ -1,4 +1,4 @@
-package htlkaindorf.clashtoolsbackend;
+package at.htlkaindorf.clashtoolsbackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
