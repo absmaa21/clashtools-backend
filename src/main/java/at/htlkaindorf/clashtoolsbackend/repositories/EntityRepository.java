@@ -1,7 +1,7 @@
 package at.htlkaindorf.clashtoolsbackend.repositories;
 
-import at.htlkaindorf.clashtoolsbackend.pojos.Entity;
+import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
 import org.springframework.data.repository.CrudRepository;
 
-public interface EntityRepository extends CrudRepository<Entity, Long> {
+public interface EntityRepository extends CrudRepository<BaseEntity, Long> {
 }

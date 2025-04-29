@@ -2,7 +2,13 @@ package at.htlkaindorf.clashtoolsbackend.pojos;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "attribute_translation")
 public class AttributeTranslation {
@@ -16,8 +22,8 @@ public class AttributeTranslation {
     private Attribute attribute;
 
     @Column(name = "language_code", nullable = false, length = 10)
-    private String languageCode; // z.B. "de", "en", "fr"
+    private String languageCode;
 
     @Column(nullable = false)
-    private String name; // Übersetzter Name des Attributes
+    private String name;
 }

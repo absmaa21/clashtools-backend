@@ -7,7 +7,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("DAMAGE_TYPE")
+@DiscriminatorValue("FAVORITE_TARGET_PET")
 public class FavoriteTargetPetAttributeValue extends AttributeValue<FavoriteTargetPet> {
 
     @Embedded

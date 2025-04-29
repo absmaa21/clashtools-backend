@@ -12,8 +12,8 @@ public abstract class AttributeValue<T> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private EntityLevel entityLevel;
+    //@ManyToOne
+    //private EntityLevel entityLevel;
 
     @ManyToOne
     private Attribute attribute;

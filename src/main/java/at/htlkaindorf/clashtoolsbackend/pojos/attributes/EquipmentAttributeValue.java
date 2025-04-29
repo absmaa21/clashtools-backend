@@ -8,7 +8,8 @@ import jakarta.persistence.*;
 @DiscriminatorValue("EQUIPMENT")
 public class EquipmentAttributeValue extends AttributeValue<Equipment> {
 
-    @Embedded
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "equipment_id") // optional: Name der Fremdschlüsselspalte
     private Equipment value;
 
     @Override
