@@ -1,7 +1,9 @@
 package at.htlkaindorf.clashtoolsbackend.controller;
 
+import at.htlkaindorf.clashtoolsbackend.dto.AuthRequest;
 import at.htlkaindorf.clashtoolsbackend.dto.AuthResponse;
 import at.htlkaindorf.clashtoolsbackend.dto.RefreshTokenRequest;
+import at.htlkaindorf.clashtoolsbackend.dto.RegisterRequest;
 import at.htlkaindorf.clashtoolsbackend.pojos.RefreshToken;
 import at.htlkaindorf.clashtoolsbackend.pojos.User;
 import at.htlkaindorf.clashtoolsbackend.repositories.RefreshTokenRepository;
@@ -9,6 +11,7 @@ import at.htlkaindorf.clashtoolsbackend.repositories.UserRepository;
 import at.htlkaindorf.clashtoolsbackend.service.AuthService;
 import at.htlkaindorf.clashtoolsbackend.service.JwtService;
 import at.htlkaindorf.clashtoolsbackend.service.RefreshTokenService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -50,5 +53,17 @@ public class AuthController {
 
         String newJwt = jwtService.generateToken(refreshToken.getUser());
         return ResponseEntity.ok(new AuthResponse(newJwt, request.getRefreshToken()));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request);
+        return ResponseEntity.ok("User registered successfully");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
+        AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 }
