@@ -28,6 +28,9 @@ public class AuthService {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already taken");
         }
+        if (userRepository.existsByMail(request.getEmail())) {
+            throw new IllegalArgumentException("Email already registered");
+        }
 
         Role userRole = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new IllegalStateException("Default role ROLE_USER not found"));

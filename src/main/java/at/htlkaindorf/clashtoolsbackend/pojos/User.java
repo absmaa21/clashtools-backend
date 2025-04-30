@@ -2,6 +2,7 @@ package at.htlkaindorf.clashtoolsbackend.pojos;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +27,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+    @Email
     private String mail;
 
     @ManyToMany(fetch = FetchType.EAGER)

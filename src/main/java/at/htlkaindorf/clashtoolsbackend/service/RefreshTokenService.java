@@ -6,6 +6,7 @@ import at.htlkaindorf.clashtoolsbackend.repositories.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -13,15 +14,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
-    private static final long REFRESH_TOKEN_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 Tage
+    //private static final long REFRESH_TOKEN_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 Tage
+    private static final Duration REFRESH_TOKEN_EXPIRATION = Duration.ofDays(7);
 
     private final RefreshTokenRepository refreshTokenRepository;
 
     public RefreshToken createRefreshToken(User user) {
+        //RefreshToken refreshToken = RefreshToken.builder()
+          //      .user(user)
+            //    .token(UUID.randomUUID().toString())
+              //  .expiryDate(Instant.now().plusMillis(REFRESH_TOKEN_DURATION_MS))
+                //.build();
+        refreshTokenRepository.deleteByUser(user);
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
                 .token(UUID.randomUUID().toString())
-                .expiryDate(Instant.now().plusMillis(REFRESH_TOKEN_DURATION_MS))
+                .expiryDate(Instant.now().plus(REFRESH_TOKEN_EXPIRATION))
                 .build();
 
         return refreshTokenRepository.save(refreshToken);
