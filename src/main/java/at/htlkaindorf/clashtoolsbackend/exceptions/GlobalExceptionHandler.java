@@ -49,7 +49,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
-        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, request, null);
+        Map<String, String> fieldErrors = new HashMap<>();
+        if (ex.getMessage().equals("Invalid credentials")) {
+            fieldErrors.put("password", ex.getMessage());
+        } else if (ex.getMessage().equals("User not found")) {
+            fieldErrors.put("username", ex.getMessage());
+        }
+        return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, request, fieldErrors);
     }
 
     private ResponseEntity<ErrorResponse> buildErrorResponse(String message, HttpStatus status, HttpServletRequest request, Map<String, String> fieldErrors) {

@@ -1,20 +1,21 @@
 package at.htlkaindorf.clashtoolsbackend.pojos;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@SequenceGenerator(name = "attribute_seq", sequenceName = "attribute_sequence", allocationSize = 50)
 public class Attribute {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attribute_seq")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -22,4 +23,7 @@ public class Attribute {
 
     @OneToMany(mappedBy = "attribute", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttributeTranslation> translations;
+
+    @ManyToMany(mappedBy = "attributes", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<BaseEntityLevel> baseEntityLevels;
 }
