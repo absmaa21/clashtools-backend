@@ -29,7 +29,7 @@ public class BaseEntityLevel {
     @JoinColumn(name = "level_id", nullable = false)
     private Level level;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "base_entity_level_attributes",
         joinColumns = @JoinColumn(name = "base_entity_level_id"),
