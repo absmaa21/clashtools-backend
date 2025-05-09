@@ -1,11 +1,11 @@
-package at.htlkaindorf.clashtoolsbackend.dto;
+package at.htlkaindorf.clashtoolsbackend.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AuthResponse {
+public class AuthResponseDTO {
     private String accessToken;
     private String refreshToken;
 }

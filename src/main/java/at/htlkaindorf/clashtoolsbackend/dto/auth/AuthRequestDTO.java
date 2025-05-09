@@ -1,10 +1,10 @@
-package at.htlkaindorf.clashtoolsbackend.dto;
+package at.htlkaindorf.clashtoolsbackend.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class AuthRequest {
+public class AuthRequestDTO {
 
     @NotBlank(message = "Username is mandatory")
     private String username;

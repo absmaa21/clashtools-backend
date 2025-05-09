@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class RegisterRequest {
+public class RegisterRequestDTO {
     @NotBlank
     private String username;
 

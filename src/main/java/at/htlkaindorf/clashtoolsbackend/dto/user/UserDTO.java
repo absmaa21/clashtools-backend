@@ -1,4 +1,4 @@
-package at.htlkaindorf.clashtoolsbackend.dto;
+package at.htlkaindorf.clashtoolsbackend.dto.user;
 
 import lombok.Data;
 

@@ -1,8 +1,8 @@
 package at.htlkaindorf.clashtoolsbackend.service;
 
-import at.htlkaindorf.clashtoolsbackend.dto.AuthRequest;
-import at.htlkaindorf.clashtoolsbackend.dto.AuthResponse;
-import at.htlkaindorf.clashtoolsbackend.dto.RegisterRequest;
+import at.htlkaindorf.clashtoolsbackend.dto.auth.AuthRequestDTO;
+import at.htlkaindorf.clashtoolsbackend.dto.auth.AuthResponseDTO;
+import at.htlkaindorf.clashtoolsbackend.dto.RegisterRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.RefreshToken;
 import at.htlkaindorf.clashtoolsbackend.pojos.Role;
 import at.htlkaindorf.clashtoolsbackend.pojos.User;
@@ -24,7 +24,7 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final RoleRepository roleRepository; // (Wird gebraucht für Standardrolle)
 
-    public void register(RegisterRequest request) {
+    public void register(RegisterRequestDTO request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already taken");
         }
@@ -45,7 +45,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public AuthResponse login(AuthRequest request) {
+    public AuthResponseDTO login(AuthRequestDTO request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -56,7 +56,7 @@ public class AuthService {
         String jwt = jwtService.generateToken(user);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
-        return new AuthResponse(jwt, refreshToken.getToken());
+        return new AuthResponseDTO(jwt, refreshToken.getToken());
     }
 
     public void logout(User user) {
