@@ -34,5 +34,5 @@ public class Category {
         joinColumns = @JoinColumn(name = "category_id"),
         inverseJoinColumns = @JoinColumn(name = "base_entity_id")
     )
-    private Set<BaseEntity> baseEntities;
+    private Set<BaseEntityName> baseEntityNames;
 }

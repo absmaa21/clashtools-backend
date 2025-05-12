@@ -18,8 +18,9 @@ public class Attribute {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attribute_seq")
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "attribute_name_id", nullable = false)
+    private AttributeName attributeName;
 
     @OneToMany(mappedBy = "attribute", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttributeTranslation> translations;

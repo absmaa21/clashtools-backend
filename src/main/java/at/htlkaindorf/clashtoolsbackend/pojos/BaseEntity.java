@@ -1,11 +1,17 @@
 package at.htlkaindorf.clashtoolsbackend.pojos;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "base_entity_seq")
@@ -19,11 +25,8 @@ public class BaseEntity {
     @OneToMany(mappedBy = "baseEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BaseEntityLevel> baseEntityLevels = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "base_entity_category",
-            joinColumns = @JoinColumn(name = "base_entity_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private Set<Category> categories = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "base_entity_name_id", nullable = false)
+    private BaseEntityName baseEntityName;
+
 }
