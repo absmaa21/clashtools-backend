@@ -1,13 +1,14 @@
 package at.htlkaindorf.clashtoolsbackend.service;
 
+import at.htlkaindorf.clashtoolsbackend.dto.RegisterRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.auth.AuthRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.auth.AuthResponseDTO;
-import at.htlkaindorf.clashtoolsbackend.dto.RegisterRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.RefreshToken;
 import at.htlkaindorf.clashtoolsbackend.pojos.Role;
 import at.htlkaindorf.clashtoolsbackend.pojos.User;
 import at.htlkaindorf.clashtoolsbackend.repositories.RoleRepository;
 import at.htlkaindorf.clashtoolsbackend.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final RoleRepository roleRepository; // (Wird gebraucht für Standardrolle)
 
+    @Transactional
     public void register(RegisterRequestDTO request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already taken");

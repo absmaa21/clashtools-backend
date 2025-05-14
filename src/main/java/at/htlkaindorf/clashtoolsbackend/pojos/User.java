@@ -20,6 +20,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     @SequenceGenerator(name = "user_seq", sequenceName = "user_sequence", allocationSize = 10)
+    private Long id;
+
+    @Version
+    private Long version;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -40,9 +44,17 @@ public class User {
     private Set<Role> roles;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "user",
+            cascade = {CascadeType.ALL},
+            orphanRemoval = true
+    )
     private Set<Account> accounts;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "user",
+            cascade = {CascadeType.ALL},
+            orphanRemoval = true
+    )
     private Set<RefreshToken> refreshTokens;
 }
