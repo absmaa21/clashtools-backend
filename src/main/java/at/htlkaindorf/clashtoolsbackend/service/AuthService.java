@@ -15,6 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+/**
+ * Service for handling authentication operations including user registration, login, and logout.
+ * This service manages user credentials, token generation, and authentication state.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -25,6 +29,13 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final RoleRepository roleRepository; // (Wird gebraucht für Standardrolle)
 
+    /**
+     * Registers a new user in the system.
+     *
+     * @param request The registration request containing username, email, and password
+     * @throws IllegalArgumentException If the username is already taken or the email is already registered
+     * @throws IllegalStateException If the default user role is not found in the database
+     */
     @Transactional
     public void register(RegisterRequestDTO request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -47,6 +58,13 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    /**
+     * Authenticates a user and generates JWT and refresh tokens.
+     *
+     * @param request The authentication request containing username and password
+     * @return AuthResponseDTO containing JWT token and refresh token
+     * @throws IllegalArgumentException If the user is not found or credentials are invalid
+     */
     public AuthResponseDTO login(AuthRequestDTO request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -61,6 +79,11 @@ public class AuthService {
         return new AuthResponseDTO(jwt, refreshToken.getToken());
     }
 
+    /**
+     * Logs out a user by deleting their refresh tokens.
+     *
+     * @param user The user to log out
+     */
     public void logout(User user) {
         refreshTokenService.deleteByUser(user);
     }

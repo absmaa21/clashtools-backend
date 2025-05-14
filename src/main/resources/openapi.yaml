@@ -1,0 +1,693 @@
+openapi: 3.0.1
+info:
+  title: Clashtools Backend API
+  description: API Dokumentation für das Clashtools Backend
+  contact:
+    name: Thomas Standegger
+    url: https://htl-kaindorf.at
+    email: statha21@htl-kaindorf.at
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Projekt-Repository
+  url: https://github.com/absmaa21/clashtools-backend
+tags:
+  - name: Authentication Controller
+    description: Handles authentication operations like login, registration, refresh token and logout.
+  - name: Base Entity
+    description: Base Entity management APIs
+  - name: Attribute
+    description: Attribute management APIs
+  - name: Account
+    description: Account management APIs
+paths:
+  /api/auth/logout:
+    post:
+      tags:
+        - Authentication Controller
+      summary: Logs out the user
+      description: Logs out the currently authenticated user and invalidates their session.
+      operationId: logout
+      parameters:
+        - name: userDetails
+          in: header
+          description: Currently authenticated user details
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully logged out
+          content:
+            text/plain:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized, user not authenticated
+        '404':
+          description: User not found
+  /api/auth/refresh:
+    post:
+      tags:
+        - Authentication Controller
+      summary: Refresh JWT Token
+      description: Refreshes the JWT token using a valid refresh token.
+      operationId: refreshToken
+      requestBody:
+        description: Refresh token request containing the refresh token
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: Successfully refreshed token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponseDTO'
+        '400':
+          description: Invalid or expired refresh token
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication Controller
+      summary: Register a new user
+      description: Registers a new user with the provided registration details.
+      operationId: register
+      requestBody:
+        description: Registration details for the new user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: User successfully registered
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Invalid registration data or username already exists
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication Controller
+      summary: Login user
+      description: Authenticates a user and returns a JWT token.
+      operationId: login
+      requestBody:
+        description: Login credentials
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponseDTO'
+        '401':
+          description: Invalid credentials
+        '400':
+          description: Invalid request data
+  /api/base-entities:
+    get:
+      tags:
+        - Base Entity
+      summary: Get all base entities
+      description: Retrieves a list of all base entities
+      operationId: getAllBaseEntities
+      responses:
+        '200':
+          description: Successfully retrieved the list of base entities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BaseEntityDTO'
+    post:
+      tags:
+        - Base Entity
+      summary: Create a new base entity
+      description: Creates a new base entity
+      operationId: createBaseEntity
+      requestBody:
+        description: Base entity data to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseEntityRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: Successfully created the base entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseEntityDTO'
+        '400':
+          description: Invalid input data
+  /api/base-entities/{id}:
+    get:
+      tags:
+        - Base Entity
+      summary: Get base entity by ID
+      description: Retrieves a base entity by its ID
+      operationId: getBaseEntityById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the base entity to retrieve
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved the base entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseEntityDTO'
+        '404':
+          description: Base entity not found
+    put:
+      tags:
+        - Base Entity
+      summary: Update a base entity
+      description: Updates an existing base entity by its ID
+      operationId: updateBaseEntity
+      parameters:
+        - name: id
+          in: path
+          description: ID of the base entity to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated base entity data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseEntityRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the base entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseEntityDTO'
+        '400':
+          description: Invalid input data
+        '404':
+          description: Base entity not found
+    delete:
+      tags:
+        - Base Entity
+      summary: Delete a base entity
+      description: Deletes a base entity by its ID
+      operationId: deleteBaseEntity
+      parameters:
+        - name: id
+          in: path
+          description: ID of the base entity to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Successfully deleted the base entity
+        '404':
+          description: Base entity not found
+  /api/attributes:
+    get:
+      tags:
+        - Attribute
+      summary: Get all attributes
+      description: Retrieves a list of all attributes
+      operationId: getAllAttributes
+      responses:
+        '200':
+          description: Successfully retrieved the list of attributes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttributeResponseDTO'
+    post:
+      tags:
+        - Attribute
+      summary: Create a new attribute
+      description: Creates a new attribute
+      operationId: createAttribute
+      requestBody:
+        description: Attribute data to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttributeRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: Successfully created the attribute
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributeResponseDTO'
+        '400':
+          description: Invalid input data
+  /api/attributes/{id}:
+    get:
+      tags:
+        - Attribute
+      summary: Get attribute by ID
+      description: Retrieves an attribute by its ID
+      operationId: getAttributeById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the attribute to retrieve
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved the attribute
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributeResponseDTO'
+        '404':
+          description: Attribute not found
+    put:
+      tags:
+        - Attribute
+      summary: Update an attribute
+      description: Updates an existing attribute by its ID
+      operationId: updateAttribute
+      parameters:
+        - name: id
+          in: path
+          description: ID of the attribute to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated attribute data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttributeRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the attribute
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributeResponseDTO'
+        '400':
+          description: Invalid input data
+        '404':
+          description: Attribute not found
+    delete:
+      tags:
+        - Attribute
+      summary: Delete an attribute
+      description: Deletes an attribute by its ID
+      operationId: deleteAttribute
+      parameters:
+        - name: id
+          in: path
+          description: ID of the attribute to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Successfully deleted the attribute
+        '404':
+          description: Attribute not found
+  /api/attributes/by-attribute-name/{attributeNameId}:
+    get:
+      tags:
+        - Attribute
+      summary: Get attributes by attribute name ID
+      description: Retrieves all attributes associated with a specific attribute name
+      operationId: getAttributesByAttributeNameId
+      parameters:
+        - name: attributeNameId
+          in: path
+          description: ID of the attribute name to filter by
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved the attributes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttributeResponseDTO'
+  /api/accounts:
+    get:
+      tags:
+        - Account
+      summary: Get all accounts
+      description: Retrieves a list of all accounts
+      operationId: getAllAccounts
+      responses:
+        '200':
+          description: Successfully retrieved the list of accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountResponseDTO'
+    post:
+      tags:
+        - Account
+      summary: Create a new account
+      description: Creates a new account
+      operationId: createAccount
+      requestBody:
+        description: Account data to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: Successfully created the account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponseDTO'
+        '400':
+          description: Invalid input data
+  /api/accounts/{id}:
+    get:
+      tags:
+        - Account
+      summary: Get account by ID
+      description: Retrieves an account by its ID
+      operationId: getAccountById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the account to retrieve
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved the account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponseDTO'
+        '404':
+          description: Account not found
+    put:
+      tags:
+        - Account
+      summary: Update an account
+      description: Updates an existing account by its ID
+      operationId: updateAccount
+      parameters:
+        - name: id
+          in: path
+          description: ID of the account to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated account data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponseDTO'
+        '400':
+          description: Invalid input data
+        '404':
+          description: Account not found
+    delete:
+      tags:
+        - Account
+      summary: Delete an account
+      description: Deletes an account by its ID
+      operationId: deleteAccount
+      parameters:
+        - name: id
+          in: path
+          description: ID of the account to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Successfully deleted the account
+        '404':
+          description: Account not found
+  /api/accounts/by-user/{userId}:
+    get:
+      tags:
+        - Account
+      summary: Get accounts by user ID
+      description: Retrieves all accounts belonging to a specific user
+      operationId: getAccountsByUserId
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to filter by
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved the accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountResponseDTO'
+components:
+  schemas:
+    AuthRequestDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    AuthResponseDTO:
+      type: object
+      properties:
+        token:
+          type: string
+        refreshToken:
+          type: string
+      required:
+        - token
+        - refreshToken
+    RefreshTokenRequestDTO:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+      required:
+        - refreshToken
+    RegisterRequestDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+        - username
+        - email
+        - password
+    BaseEntityDTO:
+      type: object
+      description: Data Transfer Object for Base Entity information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the base entity
+          example: 1
+        name:
+          type: string
+          description: Name of the base entity
+          example: Town Hall
+        level:
+          type: integer
+          description: Level of the base entity
+          example: 10
+    BaseEntityRequestDTO:
+      type: object
+      description: Request DTO for creating or updating a Base Entity
+      properties:
+        name:
+          type: string
+          description: Name of the base entity
+          example: Town Hall
+        level:
+          type: integer
+          description: Level of the base entity
+          example: 10
+      required:
+        - name
+        - level
+    AttributeNameDTO:
+      type: object
+      description: DTO for Attribute Name information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the attribute name
+          example: 1
+        name:
+          type: string
+          description: Name of the attribute
+          example: damage_per_second
+    AttributeTranslationDTO:
+      type: object
+      description: DTO for Attribute Translation information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the attribute translation
+          example: 1
+        languageCode:
+          type: string
+          description: Language code for the translation
+          example: en
+        name:
+          type: string
+          description: Translated name of the attribute
+          example: Damage per Second
+      required:
+        - languageCode
+        - name
+    AttributeRequestDTO:
+      type: object
+      description: Request DTO for creating or updating an Attribute
+      properties:
+        attributeNameId:
+          type: integer
+          format: int64
+          description: ID of the attribute name
+          example: 1
+        translations:
+          type: array
+          description: List of attribute translations
+          items:
+            $ref: '#/components/schemas/AttributeTranslationDTO'
+      required:
+        - attributeNameId
+    AttributeResponseDTO:
+      type: object
+      description: Response DTO for Attribute information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the attribute
+          example: 1
+        attributeName:
+          $ref: '#/components/schemas/AttributeNameDTO'
+          description: The attribute name object
+        translations:
+          type: array
+          description: List of attribute translations
+          items:
+            $ref: '#/components/schemas/AttributeTranslationDTO'
+    AccountRequestDTO:
+      type: object
+      description: Request DTO for creating or updating an Account
+      properties:
+        accountName:
+          type: string
+          description: Name of the account
+          example: My Clash Account
+        userId:
+          type: integer
+          format: int64
+          description: ID of the user who owns this account
+          example: 1
+      required:
+        - accountName
+        - userId
+    AccountResponseDTO:
+      type: object
+      description: Response DTO for Account information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the account
+          example: 1
+        accountName:
+          type: string
+          description: Name of the account
+          example: My Clash Account
+        userId:
+          type: integer
+          format: int64
+          description: ID of the user who owns this account
+          example: 1
+        username:
+          type: string
+          description: Username of the user who owns this account
+          example: john_doe
+        baseEntityIds:
+          type: array
+          description: IDs of base entities associated with this account
+          items:
+            type: integer
+            format: int64

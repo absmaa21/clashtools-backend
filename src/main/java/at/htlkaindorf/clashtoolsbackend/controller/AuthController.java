@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Authentication Controller
+ * Handles authentication operations like login, registration, refresh token and logout.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -32,8 +36,17 @@ public class AuthController {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
 
+    /**
+     * Logs out the user.
+     * Logs out the currently authenticated user and invalidates their session by removing any refresh tokens.
+     *
+     * @param userDetails The details of the currently authenticated user
+     * @return ResponseEntity with a success message
+     * @throws IllegalArgumentException if the user is not found
+     */
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<String> logout(
+            @AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -41,8 +54,18 @@ public class AuthController {
         return ResponseEntity.ok("Logged out successfully");
     }
 
+    /**
+     * Refresh JWT Token.
+     * Refreshes the JWT token using a valid refresh token. If the refresh token is valid and not expired,
+     * a new JWT token is generated while keeping the same refresh token.
+     *
+     * @param request The refresh token request containing the refresh token
+     * @return ResponseEntity containing a new JWT token and the existing refresh token
+     * @throws IllegalArgumentException if the refresh token is invalid or expired
+     */
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponseDTO> refreshToken(@RequestBody RefreshTokenRequestDTO request) {
+    public ResponseEntity<AuthResponseDTO> refreshToken(
+            @RequestBody RefreshTokenRequestDTO request) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(request.getRefreshToken())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
 
@@ -55,14 +78,36 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponseDTO(newJwt, request.getRefreshToken()));
     }
 
+    /**
+     * Register a new user.
+     * Registers a new user with the provided registration details. The request is validated
+     * to ensure all required fields are present and valid.
+     *
+     * @param request The registration request containing user details like username, email, and password
+     * @return ResponseEntity with a success message
+     * @throws jakarta.validation.ConstraintViolationException if validation fails
+     * @throws at.htlkaindorf.clashtoolsbackend.exceptions.EmailAlreadyExistsException if the email is already in use
+     */
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequestDTO request) {
+    public ResponseEntity<String> register(
+            @Valid @RequestBody RegisterRequestDTO request) {
         authService.register(request);
         return ResponseEntity.ok("User registered successfully");
     }
 
+    /**
+     * Login user.
+     * Authenticates a user with the provided credentials and returns a JWT token along with a refresh token.
+     * The request is validated to ensure all required fields are present.
+     *
+     * @param request The authentication request containing username and password
+     * @return ResponseEntity containing JWT token and refresh token
+     * @throws jakarta.validation.ConstraintViolationException if validation fails
+     * @throws org.springframework.security.authentication.BadCredentialsException if credentials are invalid
+     */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody AuthRequestDTO request) {
+    public ResponseEntity<AuthResponseDTO> login(
+            @Valid @RequestBody AuthRequestDTO request) {
         AuthResponseDTO response = authService.login(request);
         return ResponseEntity.ok(response);
     }

@@ -15,15 +15,39 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Global Exception Handler for the application.
+ * This class provides centralized exception handling across all controllers in the application.
+ * It translates exceptions into appropriate HTTP responses with structured error information,
+ * ensuring consistent error handling and response format throughout the API.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    /**
+     * Handles UserNotFoundException.
+     * This method is called when a UserNotFoundException is thrown in the application.
+     * It returns a 404 NOT_FOUND response with details about the error.
+     *
+     * @param ex The UserNotFoundException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with details about the error
+     */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex, HttpServletRequest request) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND, request, null);
     }
 
+    /**
+     * Handles InvalidRefreshTokenException.
+     * This method is called when an InvalidRefreshTokenException is thrown in the application.
+     * It returns a 401 UNAUTHORIZED response with details about the error.
+     *
+     * @param ex The InvalidRefreshTokenException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with details about the error
+     */
     @ExceptionHandler(InvalidRefreshTokenException.class)
     public ResponseEntity<ErrorResponse> handleInvalidRefreshTokenException(InvalidRefreshTokenException ex, HttpServletRequest request) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED, request, null);
