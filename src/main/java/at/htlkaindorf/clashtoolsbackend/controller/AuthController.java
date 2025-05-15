@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Authentication Controller
- * Handles authentication operations like login, registration, refresh token and logout.
+ * Handles authentication operations like login, registration, refresh token, and logout.
  */
 @RestController
 @RequestMapping("/api/auth")

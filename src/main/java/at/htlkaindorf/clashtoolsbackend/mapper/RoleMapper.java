@@ -1,4 +1,4 @@
 package at.htlkaindorf.clashtoolsbackend.mapper;
 
-public class RoleMapper {
+public interface RoleMapper {
 }

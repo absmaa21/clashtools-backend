@@ -22,6 +22,12 @@ tags:
     description: Attribute management APIs
   - name: Account
     description: Account management APIs
+  - name: Level
+    description: Level management APIs
+  - name: BaseEntityLevel
+    description: Base Entity Level management APIs
+  - name: AttributeValue
+    description: Attribute Value management APIs
 paths:
   /api/auth/logout:
     post:
@@ -566,6 +572,24 @@ components:
           type: integer
           description: Level of the base entity
           example: 10
+
+    BaseEntityResponseDTO:
+      type: object
+      description: Response DTO for Base Entity information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the base entity
+          example: 1
+        name:
+          type: string
+          description: Name of the base entity
+          example: Town Hall
+        level:
+          type: integer
+          description: Level of the base entity
+          example: 10
     BaseEntityRequestDTO:
       type: object
       description: Request DTO for creating or updating a Base Entity
@@ -691,3 +715,127 @@ components:
           items:
             type: integer
             format: int64
+
+    LevelRequestDTO:
+      type: object
+      description: Request DTO for creating or updating a Level
+      properties:
+        level:
+          type: integer
+          description: Level value
+          example: 5
+      required:
+        - level
+
+    LevelResponseDTO:
+      type: object
+      description: Response DTO for Level information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the level
+          example: 1
+        level:
+          type: integer
+          description: Level value
+          example: 5
+
+    BaseEntityLevelRequestDTO:
+      type: object
+      description: Request DTO for creating or updating a Base Entity Level
+      properties:
+        baseEntityId:
+          type: integer
+          format: int64
+          description: ID of the base entity
+          example: 1
+        levelId:
+          type: integer
+          format: int64
+          description: ID of the level
+          example: 1
+        attributeIds:
+          type: array
+          description: IDs of attributes associated with this base entity level
+          items:
+            type: integer
+            format: int64
+      required:
+        - baseEntityId
+        - levelId
+
+    BaseEntityLevelResponseDTO:
+      type: object
+      description: Response DTO for Base Entity Level information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the base entity level
+          example: 1
+        baseEntity:
+          $ref: '#/components/schemas/BaseEntityResponseDTO'
+          description: The base entity object
+        level:
+          $ref: '#/components/schemas/LevelResponseDTO'
+          description: The level object
+        attributes:
+          type: array
+          description: List of attributes associated with this base entity level
+          items:
+            $ref: '#/components/schemas/AttributeResponseDTO'
+
+    AttributeValueDTO:
+      type: object
+      description: DTO for Attribute Value information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the attribute value
+          example: 1
+        attributeId:
+          type: integer
+          format: int64
+          description: ID of the attribute
+          example: 1
+        attributeName:
+          type: string
+          description: Name of the attribute
+          example: damage_per_second
+        baseEntityLevelId:
+          type: integer
+          format: int64
+          description: ID of the base entity level
+          example: 1
+        valueType:
+          type: string
+          description: Type of the attribute value
+          example: INTEGER
+        value:
+          type: object
+          description: Value of the attribute, can be of different types based on valueType
+
+    UserDTO:
+      type: object
+      description: DTO for User information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the user
+          example: 1
+        username:
+          type: string
+          description: Username of the user
+          example: john_doe
+        email:
+          type: string
+          format: email
+          description: Email address of the user
+          example: john.doe@example.com
+        role:
+          type: string
+          description: Role of the user
+          example: USER

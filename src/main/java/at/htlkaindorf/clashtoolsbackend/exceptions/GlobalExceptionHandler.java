@@ -53,11 +53,29 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED, request, null);
     }
 
+    /**
+     * Handles EmailAlreadyExistsException.
+     * This method is called when an EmailAlreadyExistsException is thrown in the application.
+     * It returns a 409 CONFLICT response with details about the error.
+     *
+     * @param ex The EmailAlreadyExistsException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with details about the error
+     */
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex, HttpServletRequest request) {
         return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT, request, null);
     }
 
+    /**
+     * Handles validation exceptions from request body validation.
+     * This method is called when a MethodArgumentNotValidException is thrown during request validation.
+     * It extracts field-specific error messages and returns a 400 BAD_REQUEST response with detailed validation errors.
+     *
+     * @param ex The MethodArgumentNotValidException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with validation error details
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
         Map<String, String> fieldErrors = new HashMap<>();
@@ -70,12 +88,32 @@ public class GlobalExceptionHandler {
         return buildErrorResponse("Validation failed", HttpStatus.BAD_REQUEST, request, fieldErrors);
     }
 
+    /**
+     * Handles all unhandled exceptions.
+     * This is a catch-all handler for exceptions that don't have a specific handler.
+     * It logs the error and returns a 500 INTERNAL_SERVER_ERROR response.
+     *
+     * @param ex The Exception that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with a generic error message
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex, HttpServletRequest request) {
         logger.error("Unhandled exception at path {}: {}", request.getRequestURI(), ex.getMessage(), ex);
         return buildErrorResponse("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR, request, null);
     }
 
+    /**
+     * Handles IllegalArgumentException.
+     * This method is called when an IllegalArgumentException is thrown in the application.
+     * It maps specific error messages to relevant fields and returns a 400 BAD_REQUEST response.
+     * For authentication-related errors, it associates the error with the appropriate field
+     * (username or password) to provide more context to the client.
+     *
+     * @param ex The IllegalArgumentException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with details about the error
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
         Map<String, String> fieldErrors = new HashMap<>();
@@ -87,6 +125,16 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, request, fieldErrors);
     }
 
+    /**
+     * Handles optimistic locking failures.
+     * This method is called when an ObjectOptimisticLockingFailureException is thrown,
+     * which happens when concurrent modifications to the same entity occur.
+     * It logs the error and returns a 409 CONFLICT response with a user-friendly message.
+     *
+     * @param ex The ObjectOptimisticLockingFailureException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with a message about the concurrent modification
+     */
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
     public ResponseEntity<ErrorResponse> handleOptimisticLockingFailureException(
             ObjectOptimisticLockingFailureException ex, HttpServletRequest request) {
@@ -99,6 +147,17 @@ public class GlobalExceptionHandler {
         );
     }
 
+    /**
+     * Builds a standardized error response.
+     * This helper method creates a consistent error response structure for all exception handlers.
+     * It includes timestamp, HTTP status, error message, request path, and optional field-specific errors.
+     *
+     * @param message The main error message
+     * @param status The HTTP status code to return
+     * @param request The HTTP request that triggered the exception
+     * @param fieldErrors Optional map of field-specific error messages (can be null)
+     * @return ResponseEntity containing a fully populated ErrorResponse
+     */
     private ResponseEntity<ErrorResponse> buildErrorResponse(String message, HttpStatus status, HttpServletRequest request, Map<String, String> fieldErrors) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())

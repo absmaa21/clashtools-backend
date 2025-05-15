@@ -1,4 +1,4 @@
-package htlkaindorf.clashtoolsbackend.service;
+package at.htlkaindorf.clashtoolsbackend.service;
 
 import at.htlkaindorf.clashtoolsbackend.pojos.Role;
 import at.htlkaindorf.clashtoolsbackend.pojos.User;
