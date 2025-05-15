@@ -4,6 +4,11 @@ import at.htlkaindorf.clashtoolsbackend.constants.RoleConstants;
 import at.htlkaindorf.clashtoolsbackend.dto.RegisterRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.auth.AuthRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.auth.AuthResponseDTO;
+import at.htlkaindorf.clashtoolsbackend.exceptions.EmailAlreadyExistsException;
+import at.htlkaindorf.clashtoolsbackend.exceptions.InvalidCredentialsException;
+import at.htlkaindorf.clashtoolsbackend.exceptions.RoleNotFoundException;
+import at.htlkaindorf.clashtoolsbackend.exceptions.UserNotFoundException;
+import at.htlkaindorf.clashtoolsbackend.exceptions.UsernameAlreadyExistsException;
 import at.htlkaindorf.clashtoolsbackend.pojos.RefreshToken;
 import at.htlkaindorf.clashtoolsbackend.pojos.Role;
 import at.htlkaindorf.clashtoolsbackend.pojos.User;
@@ -113,8 +118,8 @@ public class AuthServiceTest {
         when(userRepository.existsByUsername("newuser")).thenReturn(true);
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        UsernameAlreadyExistsException exception = assertThrows(
+                UsernameAlreadyExistsException.class,
                 () -> authService.register(registerRequest)
         );
         assertEquals("Username already taken", exception.getMessage());
@@ -131,8 +136,8 @@ public class AuthServiceTest {
         when(userRepository.existsByMail("new@example.com")).thenReturn(true);
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        EmailAlreadyExistsException exception = assertThrows(
+                EmailAlreadyExistsException.class,
                 () -> authService.register(registerRequest)
         );
         assertEquals("Email already registered", exception.getMessage());
@@ -151,8 +156,8 @@ public class AuthServiceTest {
         when(roleRepository.findByName(RoleConstants.ROLE_USER.getRoleName())).thenReturn(Optional.empty());
 
         // Act & Assert
-        IllegalStateException exception = assertThrows(
-                IllegalStateException.class,
+        RoleNotFoundException exception = assertThrows(
+                RoleNotFoundException.class,
                 () -> authService.register(registerRequest)
         );
         assertEquals("Default role " + RoleConstants.ROLE_USER.getRoleName() + " not found", exception.getMessage());
@@ -196,11 +201,11 @@ public class AuthServiceTest {
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
                 () -> authService.login(authRequest)
         );
-        assertEquals("User not found", exception.getMessage());
+        assertEquals("User not found with username: testuser", exception.getMessage());
 
         // Verify
         verify(userRepository).findByUsername("testuser");
@@ -214,11 +219,11 @@ public class AuthServiceTest {
         when(passwordEncoder.matches("password", "encodedPassword")).thenReturn(false);
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        InvalidCredentialsException exception = assertThrows(
+                InvalidCredentialsException.class,
                 () -> authService.login(authRequest)
         );
-        assertEquals("Invalid credentials", exception.getMessage());
+        assertEquals("Invalid password for user: testuser", exception.getMessage());
 
         // Verify
         verify(userRepository).findByUsername("testuser");

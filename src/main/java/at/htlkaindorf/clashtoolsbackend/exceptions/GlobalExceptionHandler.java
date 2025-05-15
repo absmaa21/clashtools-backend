@@ -148,6 +148,81 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles UsernameAlreadyExistsException.
+     * This method is called when a UsernameAlreadyExistsException is thrown in the application.
+     * It returns a 409 CONFLICT response with details about the error.
+     *
+     * @param ex The UsernameAlreadyExistsException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with details about the error
+     */
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex, HttpServletRequest request) {
+        Map<String, String> fieldErrors = new HashMap<>();
+        fieldErrors.put("username", ex.getMessage());
+        return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT, request, fieldErrors);
+    }
+
+    /**
+     * Handles InvalidCredentialsException.
+     * This method is called when an InvalidCredentialsException is thrown in the application.
+     * It returns a 401 UNAUTHORIZED response with details about the error.
+     *
+     * @param ex The InvalidCredentialsException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with details about the error
+     */
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(InvalidCredentialsException ex, HttpServletRequest request) {
+        Map<String, String> fieldErrors = new HashMap<>();
+        fieldErrors.put("password", ex.getMessage());
+        return buildErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED, request, fieldErrors);
+    }
+
+    /**
+     * Handles RoleNotFoundException.
+     * This method is called when a RoleNotFoundException is thrown in the application.
+     * It returns a 500 INTERNAL_SERVER_ERROR response with details about the error.
+     *
+     * @param ex The RoleNotFoundException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with details about the error
+     */
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleRoleNotFoundException(RoleNotFoundException ex, HttpServletRequest request) {
+        logger.error("Role not found at path {}: {}", request.getRequestURI(), ex.getMessage(), ex);
+        return buildErrorResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, request, null);
+    }
+
+    /**
+     * Handles InvalidJwtException.
+     * This method is called when an InvalidJwtException is thrown in the application.
+     * It returns a 401 UNAUTHORIZED response with details about the error.
+     *
+     * @param ex The InvalidJwtException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with details about the error
+     */
+    @ExceptionHandler(InvalidJwtException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidJwtException(InvalidJwtException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED, request, null);
+    }
+
+    /**
+     * Handles JwtExpiredException.
+     * This method is called when a JwtExpiredException is thrown in the application.
+     * It returns a 401 UNAUTHORIZED response with details about the error.
+     *
+     * @param ex The JwtExpiredException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with details about the error
+     */
+    @ExceptionHandler(JwtExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleJwtExpiredException(JwtExpiredException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED, request, null);
+    }
+
+    /**
      * Builds a standardized error response.
      * This helper method creates a consistent error response structure for all exception handlers.
      * It includes timestamp, HTTP status, error message, request path, and optional field-specific errors.

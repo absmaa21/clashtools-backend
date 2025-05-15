@@ -4,6 +4,11 @@ import at.htlkaindorf.clashtoolsbackend.constants.RoleConstants;
 import at.htlkaindorf.clashtoolsbackend.dto.RegisterRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.auth.AuthRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.auth.AuthResponseDTO;
+import at.htlkaindorf.clashtoolsbackend.exceptions.EmailAlreadyExistsException;
+import at.htlkaindorf.clashtoolsbackend.exceptions.InvalidCredentialsException;
+import at.htlkaindorf.clashtoolsbackend.exceptions.RoleNotFoundException;
+import at.htlkaindorf.clashtoolsbackend.exceptions.UserNotFoundException;
+import at.htlkaindorf.clashtoolsbackend.exceptions.UsernameAlreadyExistsException;
 import at.htlkaindorf.clashtoolsbackend.pojos.RefreshToken;
 import at.htlkaindorf.clashtoolsbackend.pojos.Role;
 import at.htlkaindorf.clashtoolsbackend.pojos.User;
@@ -66,17 +71,17 @@ public class AuthService {
 
         if (userRepository.existsByUsername(request.getUsername())) {
             logger.warn("Registration failed: Username '{}' already taken", request.getUsername());
-            throw new IllegalArgumentException("Username already taken");
+            throw new UsernameAlreadyExistsException("Username already taken");
         }
         if (userRepository.existsByMail(request.getEmail())) {
             logger.warn("Registration failed: Email '{}' already registered", request.getEmail());
-            throw new IllegalArgumentException("Email already registered");
+            throw new EmailAlreadyExistsException("Email already registered");
         }
 
         Role userRole = roleRepository.findByName(RoleConstants.ROLE_USER.getRoleName())
                 .orElseThrow(() -> {
                     logger.error("Default role {} not found in database", RoleConstants.ROLE_USER.getRoleName());
-                    return new IllegalStateException("Default role " + RoleConstants.ROLE_USER.getRoleName() + " not found");
+                    return new RoleNotFoundException("Default role " + RoleConstants.ROLE_USER.getRoleName() + " not found");
                 });
 
         User user = User.builder()
@@ -118,12 +123,12 @@ public class AuthService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> {
                     logger.warn("Login failed: User not found with username: {}", request.getUsername());
-                    return new IllegalArgumentException("User not found");
+                    return new UserNotFoundException("User not found with username: " + request.getUsername());
                 });
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             logger.warn("Login failed: Invalid credentials for user: {}", request.getUsername());
-            throw new IllegalArgumentException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid password for user: " + request.getUsername());
         }
 
         logger.debug("Generating JWT token for user: {}", user.getUsername());
