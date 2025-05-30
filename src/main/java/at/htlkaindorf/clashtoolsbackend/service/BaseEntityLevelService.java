@@ -2,15 +2,10 @@ package at.htlkaindorf.clashtoolsbackend.service;
 
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelResponseDTO;
+import at.htlkaindorf.clashtoolsbackend.dto.baseentity.SimpleBaseEntityLevelRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.mapper.BaseEntityLevelMapper;
-import at.htlkaindorf.clashtoolsbackend.pojos.Attribute;
-import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
-import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntityLevel;
-import at.htlkaindorf.clashtoolsbackend.pojos.Level;
-import at.htlkaindorf.clashtoolsbackend.repositories.AttributeRepository;
-import at.htlkaindorf.clashtoolsbackend.repositories.BaseEntityLevelRepository;
-import at.htlkaindorf.clashtoolsbackend.repositories.BaseEntityRepository;
-import at.htlkaindorf.clashtoolsbackend.repositories.LevelRepository;
+import at.htlkaindorf.clashtoolsbackend.pojos.*;
+import at.htlkaindorf.clashtoolsbackend.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +30,7 @@ public class BaseEntityLevelService {
     private final LevelRepository levelRepository;
     private final AttributeRepository attributeRepository;
     private final BaseEntityLevelMapper baseEntityLevelMapper;
+    private final AccountRepository accountRepository;
 
     /**
      * Retrieves all base entity levels from the database.
@@ -223,5 +219,102 @@ public class BaseEntityLevelService {
         Level level = levelRepository.findById(levelId)
                 .orElseThrow(() -> new IllegalArgumentException("Level not found"));
         baseEntityLevelRepository.deleteByLevel(level);
+    }
+
+    /**
+     * Creates a new base entity level with a simplified request.
+     * This method provides a simpler way to create a base entity level by:
+     * 1. Finding the account with the given ID
+     * 2. Finding or creating a base entity for the given account and base entity name
+     * 3. Creating a new base entity level for the base entity and level
+     * 4. Associating the attributes with the base entity level
+     *
+     * @param requestDTO The SimpleBaseEntityLevelRequestDTO containing the data for the new base entity level
+     * @return A BaseEntityLevelResponseDTO representing the newly created base entity level
+     * @throws IllegalArgumentException If the account with the given ID does not exist
+     * @throws IllegalArgumentException If the level with the given ID does not exist
+     * @throws IllegalArgumentException If any of the attributes with the given IDs do not exist
+     */
+    public BaseEntityLevelResponseDTO createSimpleBaseEntityLevel(SimpleBaseEntityLevelRequestDTO requestDTO) {
+        // Verify that the account exists
+        Account account = accountRepository.findById(requestDTO.getAccountId())
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        // Verify that the level exists
+        Level level = levelRepository.findById(requestDTO.getLevelId())
+                .orElseThrow(() -> new IllegalArgumentException("Level not found"));
+
+        // Find or create a base entity for the given account and base entity name
+        BaseEntity baseEntity = findOrCreateBaseEntity(account, requestDTO.getBaseEntityNameId());
+
+        // Check if a base entity level with the same base entity and level already exists
+        baseEntityLevelRepository.findByBaseEntityAndLevel(baseEntity, level)
+                .ifPresent(existingLevel -> {
+                    throw new IllegalArgumentException("A base entity level with the same base entity and level already exists");
+                });
+
+        // Verify that all attributes exist
+        Set<Attribute> attributes = new HashSet<>();
+        if (requestDTO.getAttributeIds() != null && !requestDTO.getAttributeIds().isEmpty()) {
+            attributes = requestDTO.getAttributeIds().stream()
+                    .map(attributeId -> attributeRepository.findById(attributeId)
+                            .orElseThrow(() -> new IllegalArgumentException("Attribute not found: " + attributeId)))
+                    .collect(Collectors.toSet());
+        }
+
+        // Create a new base entity level
+        BaseEntityLevel baseEntityLevel = new BaseEntityLevel();
+        baseEntityLevel.setBaseEntity(baseEntity);
+        baseEntityLevel.setLevel(level);
+        baseEntityLevel.setAttributes(attributes);
+
+        BaseEntityLevel savedBaseEntityLevel = baseEntityLevelRepository.save(baseEntityLevel);
+        return baseEntityLevelMapper.toResponseDTO(savedBaseEntityLevel);
+    }
+
+    /**
+     * Finds or creates a base entity for the given account and base entity name.
+     * This method checks if a base entity with the given account and base entity name already exists.
+     * If it does, it returns that base entity. If not, it creates a new one.
+     *
+     * @param account The account to associate the base entity with
+     * @param baseEntityNameId The ID of the base entity name to use for the base entity
+     * @return The found or created base entity
+     * @throws IllegalArgumentException If the base entity name with the given ID does not exist
+     */
+    private BaseEntity findOrCreateBaseEntity(Account account, Long baseEntityNameId) {
+        // Get all base entities for the account
+        List<BaseEntity> accountBaseEntities = baseEntityRepository.findByAccountId(account.getId());
+
+        // Find a base entity with the matching base entity name ID
+        for (BaseEntity baseEntity : accountBaseEntities) {
+            if (baseEntity.getBaseEntityName() != null &&
+                baseEntity.getBaseEntityName().getId().equals(baseEntityNameId)) {
+                return baseEntity;
+            }
+        }
+
+        // If no matching base entity is found, create a new one
+        // First, find the base entity name
+        BaseEntityName baseEntityName = null;
+        // Since we don't have a BaseEntityNameRepository, we need to find it another way
+        // We'll look through all base entities to find one with the matching base entity name ID
+        for (BaseEntity baseEntity : baseEntityRepository.findAll()) {
+            if (baseEntity.getBaseEntityName() != null &&
+                baseEntity.getBaseEntityName().getId().equals(baseEntityNameId)) {
+                baseEntityName = baseEntity.getBaseEntityName();
+                break;
+            }
+        }
+
+        if (baseEntityName == null) {
+            throw new IllegalArgumentException("Base entity name not found");
+        }
+
+        // Create a new base entity
+        BaseEntity newBaseEntity = new BaseEntity();
+        newBaseEntity.setAccount(account);
+        newBaseEntity.setBaseEntityName(baseEntityName);
+        return baseEntityRepository.save(newBaseEntity);
     }
 }

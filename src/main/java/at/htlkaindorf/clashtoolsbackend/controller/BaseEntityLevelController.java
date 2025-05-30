@@ -2,6 +2,7 @@ package at.htlkaindorf.clashtoolsbackend.controller;
 
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelResponseDTO;
+import at.htlkaindorf.clashtoolsbackend.dto.baseentity.SimpleBaseEntityLevelRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.service.BaseEntityLevelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -95,6 +96,29 @@ public class BaseEntityLevelController {
     public ResponseEntity<BaseEntityLevelResponseDTO> createBaseEntityLevel(
             @Valid @RequestBody BaseEntityLevelRequestDTO requestDTO) {
         BaseEntityLevelResponseDTO baseEntityLevel = baseEntityLevelService.createBaseEntityLevel(requestDTO);
+        return ResponseEntity.ok(baseEntityLevel);
+    }
+
+    /**
+     * Create a new base entity level with a simplified request.
+     * Creates a new base entity level with the provided information in a simplified way.
+     * This endpoint provides a simpler way to create a base entity level by:
+     * 1. Finding the account with the given ID
+     * 2. Finding or creating a base entity for the given account and base entity name
+     * 3. Creating a new base entity level for the base entity and level
+     * 4. Associating the attributes with the base entity level
+     *
+     * @param requestDTO The SimpleBaseEntityLevelRequestDTO containing the information for the new base entity level
+     * @return ResponseEntity containing the newly created BaseEntityLevelResponseDTO
+     * @throws jakarta.validation.ConstraintViolationException if validation fails
+     * @throws IllegalArgumentException if the account with the given ID does not exist
+     * @throws IllegalArgumentException if the level with the given ID does not exist
+     * @throws IllegalArgumentException if any of the attributes with the given IDs do not exist
+     */
+    @PostMapping("/simple")
+    public ResponseEntity<BaseEntityLevelResponseDTO> createSimpleBaseEntityLevel(
+            @Valid @RequestBody SimpleBaseEntityLevelRequestDTO requestDTO) {
+        BaseEntityLevelResponseDTO baseEntityLevel = baseEntityLevelService.createSimpleBaseEntityLevel(requestDTO);
         return ResponseEntity.ok(baseEntityLevel);
     }
 
