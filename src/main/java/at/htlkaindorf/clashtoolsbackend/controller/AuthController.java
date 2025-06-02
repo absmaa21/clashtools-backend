@@ -11,6 +11,8 @@ import at.htlkaindorf.clashtoolsbackend.repositories.UserRepository;
 import at.htlkaindorf.clashtoolsbackend.service.AuthService;
 import at.htlkaindorf.clashtoolsbackend.service.JwtService;
 import at.htlkaindorf.clashtoolsbackend.service.RefreshTokenService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +67,8 @@ public class AuthController {
      */
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponseDTO> refreshToken(
-            @RequestBody RefreshTokenRequestDTO request) {
+            @RequestBody RefreshTokenRequestDTO request,
+            HttpServletResponse httpServletResponse) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(request.getRefreshToken())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
 
@@ -75,6 +78,14 @@ public class AuthController {
         }
 
         String newJwt = jwtService.generateToken(refreshToken.getUser());
+
+        // Set access token as a cookie
+        Cookie accessTokenCookie = new Cookie("access_token", newJwt);
+        accessTokenCookie.setHttpOnly(false); // Allow JavaScript access
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(3600); // 1 hour
+        httpServletResponse.addCookie(accessTokenCookie);
+
         return ResponseEntity.ok(new AuthResponseDTO(newJwt, request.getRefreshToken()));
     }
 
@@ -107,8 +118,17 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(
-            @Valid @RequestBody AuthRequestDTO request) {
+            @Valid @RequestBody AuthRequestDTO request,
+            HttpServletResponse httpServletResponse) {
         AuthResponseDTO response = authService.login(request);
+
+        // Set access token as a cookie
+        Cookie accessTokenCookie = new Cookie("access_token", response.getAccessToken());
+        accessTokenCookie.setHttpOnly(false); // Allow JavaScript access
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(3600); // 1 hour
+        httpServletResponse.addCookie(accessTokenCookie);
+
         return ResponseEntity.ok(response);
     }
 }
