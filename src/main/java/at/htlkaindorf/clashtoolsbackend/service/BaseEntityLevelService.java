@@ -130,6 +130,12 @@ public class BaseEntityLevelService {
         BaseEntityLevel baseEntityLevel = baseEntityLevelMapper.toEntity(requestDTO);
         baseEntityLevel.setAttributes(attributes);
 
+        // Explicitly set all fields for clarity and consistency
+        baseEntityLevel.setResourceType(requestDTO.getResourceType());
+        baseEntityLevel.setUpgradeCost(requestDTO.getUpgradeCost());
+        baseEntityLevel.setUpgradeTime(requestDTO.getUpgradeTime());
+        baseEntityLevel.setImgPath(requestDTO.getImgPath());
+
         BaseEntityLevel savedBaseEntityLevel = baseEntityLevelRepository.save(baseEntityLevel);
         return baseEntityLevelMapper.toResponseDTO(savedBaseEntityLevel);
     }
@@ -179,6 +185,12 @@ public class BaseEntityLevelService {
         baseEntityLevel.setBaseEntity(baseEntity);
         baseEntityLevel.setLevel(level);
         baseEntityLevel.setAttributes(attributes);
+
+        // Update the additional fields
+        baseEntityLevel.setResourceType(requestDTO.getResourceType());
+        baseEntityLevel.setUpgradeCost(requestDTO.getUpgradeCost());
+        baseEntityLevel.setUpgradeTime(requestDTO.getUpgradeTime());
+        baseEntityLevel.setImgPath(requestDTO.getImgPath());
 
         BaseEntityLevel updatedBaseEntityLevel = baseEntityLevelRepository.save(baseEntityLevel);
         return baseEntityLevelMapper.toResponseDTO(updatedBaseEntityLevel);
@@ -267,6 +279,12 @@ public class BaseEntityLevelService {
         baseEntityLevel.setBaseEntity(baseEntity);
         baseEntityLevel.setLevel(level);
         baseEntityLevel.setAttributes(attributes);
+
+        // Set the additional fields
+        baseEntityLevel.setResourceType(requestDTO.getResourceType());
+        baseEntityLevel.setUpgradeCost(requestDTO.getUpgradeCost());
+        baseEntityLevel.setUpgradeTime(requestDTO.getUpgradeTime());
+        baseEntityLevel.setImgPath(requestDTO.getImgPath());
 
         BaseEntityLevel savedBaseEntityLevel = baseEntityLevelRepository.save(baseEntityLevel);
         return baseEntityLevelMapper.toResponseDTO(savedBaseEntityLevel);
