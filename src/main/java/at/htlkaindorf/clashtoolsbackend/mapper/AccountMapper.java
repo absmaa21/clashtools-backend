@@ -17,12 +17,10 @@ public interface AccountMapper {
 
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.username", target = "username")
-    @Mapping(source = "baseEntities", target = "baseEntityIds", qualifiedByName = "baseEntitiesToIds")
     AccountResponseDTO toDTO(Account account);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
-    @Mapping(target = "baseEntities", ignore = true)
     Account toEntity(AccountRequestDTO requestDTO);
 
     List<AccountResponseDTO> toDTOList(List<Account> accounts);

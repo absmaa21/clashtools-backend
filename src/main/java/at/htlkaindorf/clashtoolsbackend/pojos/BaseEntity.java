@@ -21,11 +21,6 @@ public class BaseEntity {
     @Schema(description = "Unique identifier of the base entity", example = "1")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "account_id", nullable = false)
-    @Schema(description = "Account that owns this base entity")
-    private Account account;
-
     @OneToMany(mappedBy = "baseEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "Set of levels associated with this base entity")
     private Set<BaseEntityLevel> baseEntityLevels = new HashSet<>();

@@ -10,11 +10,4 @@ import java.util.List;
 @Repository
 @Tag(name = "BaseEntityRepository", description = "Repository for managing BaseEntity objects")
 public interface BaseEntityRepository extends JpaRepository<BaseEntity, Long> {
-    /**
-     * Find all base entities belonging to a specific account
-     *
-     * @param accountId the ID of the account
-     * @return list of base entities associated with the account
-     */
-    List<BaseEntity> findByAccountId(Long accountId);
 }
