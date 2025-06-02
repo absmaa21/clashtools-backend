@@ -36,4 +36,15 @@ public class BaseEntityLevel {
         inverseJoinColumns = @JoinColumn(name = "attribute_id")
     )
     private Set<Attribute> attributes;
+
+    private ResourceType resourceType;
+
+    private Integer upgradeCost;
+
+    /**
+     * Given in seconds
+     */
+    private Integer upgradeTime;
+
+    private String imgPath;
 }
