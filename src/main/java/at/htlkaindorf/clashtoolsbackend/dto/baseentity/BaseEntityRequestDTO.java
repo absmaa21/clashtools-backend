@@ -9,6 +9,5 @@ public class BaseEntityRequestDTO {
     @NotBlank
     private String name;
 
-    @NotNull
-    private int level;
+    private Integer level;
 }

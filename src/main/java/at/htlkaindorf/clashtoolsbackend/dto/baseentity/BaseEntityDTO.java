@@ -8,5 +8,5 @@ public class BaseEntityDTO {
 
     private String name;
 
-    private int level;
+    private Integer level;
 }

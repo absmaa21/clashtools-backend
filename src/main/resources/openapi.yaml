@@ -22,6 +22,8 @@ tags:
     description: Attribute management APIs
   - name: Account
     description: Account management APIs
+  - name: Account Entity
+    description: Account Entity management APIs
   - name: Level
     description: Level management APIs
   - name: BaseEntityLevel
@@ -512,6 +514,169 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AccountResponseDTO'
+
+  /api/account-entity/account/{accountId}:
+    get:
+      tags:
+        - Account Entity
+      summary: Get all account entities for a specific account
+      description: Retrieves all account entities belonging to a specific account
+      operationId: getAccEntitiesByAccountId
+      parameters:
+        - name: accountId
+          in: path
+          description: ID of the account to filter by
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved the account entities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountEntityDTO'
+        '404':
+          description: Account not found
+
+  /api/account-entity:
+    post:
+      tags:
+        - Account Entity
+      summary: Create a new account entity
+      description: Creates a new account entity
+      operationId: createAccountEntity
+      requestBody:
+        description: Account entity data to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountEntityRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: Successfully created the account entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountEntityDTO'
+        '400':
+          description: Invalid input data
+        '404':
+          description: Account or base entity not found
+
+  /api/account-entity/{id}:
+    get:
+      tags:
+        - Account Entity
+      summary: Get account entity by ID
+      description: Retrieves an account entity by its ID
+      operationId: getAccountEntityById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the account entity to retrieve
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully retrieved the account entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountEntityDTO'
+        '404':
+          description: Account entity not found
+
+    put:
+      tags:
+        - Account Entity
+      summary: Update an account entity
+      description: Updates an existing account entity by its ID
+      operationId: updateAccountEntity
+      parameters:
+        - name: id
+          in: path
+          description: ID of the account entity to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated account entity data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountEntityRequestDTO'
+        required: true
+      responses:
+        '200':
+          description: Successfully updated the account entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountEntityDTO'
+        '400':
+          description: Invalid input data
+        '404':
+          description: Account entity, account, or base entity not found
+
+    delete:
+      tags:
+        - Account Entity
+      summary: Delete an account entity
+      description: Deletes an account entity by its ID
+      operationId: deleteAccountEntity
+      parameters:
+        - name: id
+          in: path
+          description: ID of the account entity to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Successfully deleted the account entity
+        '404':
+          description: Account entity not found
+
+  /api/account-entity/{id}/upgrade-start:
+    patch:
+      tags:
+        - Account Entity
+      summary: Update the upgrade start time for an account entity
+      description: Updates the upgrade start time for an account entity
+      operationId: updateUpgradeStart
+      parameters:
+        - name: id
+          in: path
+          description: ID of the account entity to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: upgradeStart
+          in: query
+          description: The new upgrade start time in milliseconds
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Successfully updated the upgrade start time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountEntityDTO'
+        '404':
+          description: Account entity not found
 components:
   schemas:
     AuthRequestDTO:
@@ -839,3 +1004,57 @@ components:
           type: string
           description: Role of the user
           example: USER
+
+    AccountEntityDTO:
+      type: object
+      description: DTO for Account Entity information
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the account entity
+          example: 1
+        entity:
+          $ref: '#/components/schemas/BaseEntityDTO'
+          description: The base entity associated with this account entity
+        level:
+          type: integer
+          description: Current level of the entity
+          example: 5
+        upgradeStart:
+          type: integer
+          format: int32
+          description: Timestamp when the upgrade started, in milliseconds
+          example: 1625097600000
+      required:
+        - id
+        - entity
+        - level
+
+    AccountEntityRequestDTO:
+      type: object
+      description: Request DTO for creating or updating an Account Entity
+      properties:
+        accountId:
+          type: integer
+          format: int64
+          description: ID of the account that owns this account entity
+          example: 1
+        baseEntityId:
+          type: integer
+          format: int64
+          description: ID of the base entity that this account entity corresponds to
+          example: 1
+        currentLevel:
+          type: integer
+          description: Current level of the entity
+          example: 5
+        upgradeStart:
+          type: integer
+          format: int32
+          description: Timestamp when the upgrade started, in milliseconds
+          example: 1625097600000
+      required:
+        - accountId
+        - baseEntityId
+        - currentLevel
