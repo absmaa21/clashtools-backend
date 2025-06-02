@@ -46,10 +46,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*")); // erlaubt alle Ursprünge
+        config.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:8080")); // Specific origins
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(false); // Wenn keine Cookies etc. gesendet werden
+        config.setAllowCredentials(true); // Enable credentials for authenticated requests
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
