@@ -21,6 +21,8 @@
         <querydsl.version>5.0.0</querydsl.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jjwt.version>0.11.5</jjwt.version> <!-- hinzugefügt -->
+        <spring-boot-starter-cache.version>3.2.5</spring-boot-starter-cache.version>
+        <spring-boot-starter-data-redis.version>3.2.5</spring-boot-starter-data-redis.version>
     </properties>
 
     <dependencies>
@@ -152,6 +154,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Caching Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+            <version>${spring-boot-starter-cache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>${spring-boot-starter-data-redis.version}</version>
         </dependency>
     </dependencies>
 

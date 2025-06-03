@@ -2,6 +2,8 @@ package at.htlkaindorf.clashtoolsbackend.pojos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
+import jakarta.persistence.Index;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(indexes = {
+    @Index(name = "idx_base_entity_category", columnList = "category")
+})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

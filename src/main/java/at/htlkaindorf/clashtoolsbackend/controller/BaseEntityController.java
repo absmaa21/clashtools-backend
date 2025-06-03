@@ -2,6 +2,7 @@ package at.htlkaindorf.clashtoolsbackend.controller;
 
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityRequestDTO;
+import at.htlkaindorf.clashtoolsbackend.pojos.Category;
 import at.htlkaindorf.clashtoolsbackend.service.BaseEntityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -98,5 +99,35 @@ public class BaseEntityController {
             @PathVariable Long id) {
         baseEntityService.deleteBaseEntity(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Get base entities by category.
+     * Retrieves a list of base entities filtered by the specified category.
+     * This endpoint uses an optimized query that leverages database indexing.
+     *
+     * @param category The category to filter by
+     * @return ResponseEntity containing a list of BaseEntityDTO objects
+     */
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<BaseEntityDTO>> getBaseEntitiesByCategory(
+            @PathVariable Category category) {
+        List<BaseEntityDTO> baseEntities = baseEntityService.getBaseEntitiesByCategory(category);
+        return ResponseEntity.ok(baseEntities);
+    }
+
+    /**
+     * Search base entities by name.
+     * Retrieves a list of base entities with names containing the specified string (case-insensitive).
+     * This endpoint uses an optimized query for case-insensitive name searching.
+     *
+     * @param name The name substring to search for
+     * @return ResponseEntity containing a list of BaseEntityDTO objects
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<BaseEntityDTO>> searchBaseEntitiesByName(
+            @RequestParam String name) {
+        List<BaseEntityDTO> baseEntities = baseEntityService.getBaseEntitiesByNameContaining(name);
+        return ResponseEntity.ok(baseEntities);
     }
 }
