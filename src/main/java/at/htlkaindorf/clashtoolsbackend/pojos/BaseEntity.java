@@ -21,13 +21,19 @@ public class BaseEntity {
     @Schema(description = "Unique identifier of the base entity", example = "1")
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    @Schema(description = "Name of the base entity")
+    private String name;
+
     @OneToMany(mappedBy = "baseEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "Set of levels associated with this base entity")
     private Set<BaseEntityLevel> baseEntityLevels = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "base_entity_name_id", nullable = false)
-    @Schema(description = "Name of the base entity")
-    private BaseEntityName baseEntityName;
-
+    @ManyToMany
+    @JoinTable(
+        name = "base_entity_category",
+        joinColumns = @JoinColumn(name = "base_entity_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
 }

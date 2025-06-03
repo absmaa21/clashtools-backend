@@ -82,7 +82,7 @@ public class BaseEntityService {
         BaseEntity baseEntity = baseEntityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("BaseEntity not found"));
 
-        baseEntity.getBaseEntityName().setName(request.getName());
+        baseEntity.setName(request.getName());
         BaseEntity updatedBaseEntity = baseEntityRepository.save(baseEntity);
         return baseEntityMapper.toDTO(updatedBaseEntity);
     }

@@ -1,7 +1,7 @@
 package at.htlkaindorf.clashtoolsbackend.repositories;
 
 import at.htlkaindorf.clashtoolsbackend.pojos.AttributeName;
-import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntityName;
+import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
 import at.htlkaindorf.clashtoolsbackend.pojos.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -41,10 +41,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByAttributeNamesContaining(AttributeName attributeName);
 
     /**
-     * Find all categories that contain a specific base entity name
+     * Find all categories that contain a specific base entity
      *
-     * @param baseEntityName the base entity name to search for
+     * @param baseEntity the base entity to search for
      * @return a list of categories
      */
-    List<Category> findByBaseEntityNamesContaining(BaseEntityName baseEntityName);
+    List<Category> findByBaseEntitiesContaining(BaseEntity baseEntity);
 }

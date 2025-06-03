@@ -28,11 +28,6 @@ public class Category {
     )
     private Set<AttributeName> attributeNames;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-        name = "category_base_entity",
-        joinColumns = @JoinColumn(name = "category_id"),
-        inverseJoinColumns = @JoinColumn(name = "base_entity_id")
-    )
-    private Set<BaseEntityName> baseEntityNames;
+    @ManyToMany(mappedBy = "categories", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<BaseEntity> baseEntities;
 }

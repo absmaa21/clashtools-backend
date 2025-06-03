@@ -19,5 +19,5 @@ public class CategoryRequestDTO {
 
     private Set<Long> attributeNameIds;
 
-    private Set<Long> baseEntityNameIds;
+    private Set<Long> baseEntityIds;
 }

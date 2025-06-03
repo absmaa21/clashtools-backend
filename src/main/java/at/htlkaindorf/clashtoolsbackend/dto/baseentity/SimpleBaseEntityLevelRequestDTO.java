@@ -29,10 +29,10 @@ public class SimpleBaseEntityLevelRequestDTO {
     private Long accountId;
 
     /**
-     * The ID of the BaseEntityName to use for the BaseEntity.
+     * The ID of the BaseEntity to use.
      */
-    @NotNull(message = "BaseEntityName ID is mandatory")
-    private Long baseEntityNameId;
+    @NotNull(message = "BaseEntity ID is mandatory")
+    private Long baseEntityId;
 
     /**
      * The ID of the Level to associate with the BaseEntityLevel.

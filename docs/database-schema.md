@@ -11,7 +11,6 @@ The database schema consists of several interconnected entities that represent t
 - **RefreshToken**: Represents a refresh token for JWT authentication
 - **Account**: Represents a user's account in the game
 - **BaseEntity**: Represents a base game object
-- **BaseEntityName**: Represents the name of a base entity
 - **BaseEntityLevel**: Represents a specific level of a base entity
 - **Level**: Represents a level value
 - **Attribute**: Represents a characteristic or property
@@ -60,17 +59,11 @@ The database schema consists of several interconnected entities that represent t
 ### BaseEntity
 - **Attributes**:
   - `id` (Long): Primary key
-- **Relationships**:
-  - Many-to-One with `Account`: A base entity belongs to an account
-  - Many-to-One with `BaseEntityName`: A base entity has a name
-  - One-to-Many with `BaseEntityLevel`: A base entity can have multiple levels
-
-### BaseEntityName
-- **Attributes**:
-  - `id` (Long): Primary key
   - `name` (String): Name of the base entity
 - **Relationships**:
-  - One-to-Many with `BaseEntity`: A base entity name can be used by multiple base entities
+  - Many-to-One with `Account`: A base entity belongs to an account
+  - One-to-Many with `BaseEntityLevel`: A base entity can have multiple levels
+  - Many-to-Many with `Category`: A base entity can belong to multiple categories
 
 ### BaseEntityLevel
 - **Attributes**:
@@ -126,6 +119,7 @@ The database schema consists of several interconnected entities that represent t
   - `name` (String): Category name
 - **Relationships**:
   - Many-to-Many with `AttributeName`: A category can contain multiple attribute names
+  - Many-to-Many with `BaseEntity`: A category can contain multiple base entities
 
 ## Database Tables
 
@@ -137,16 +131,16 @@ The following tables are created in the database:
 4. `refresh_token`: Stores refresh token information
 5. `account`: Stores account information
 6. `base_entity`: Stores base entity information
-7. `base_entity_name`: Stores base entity name information
-8. `base_entity_level`: Stores base entity level information
-9. `level`: Stores level information
-10. `base_entity_level_attributes`: Junction table for the many-to-many relationship between base entity levels and attributes
-11. `attribute`: Stores attribute information
-12. `attribute_name`: Stores attribute name information
-13. `attribute_translation`: Stores attribute translation information
-14. `attribute_value`: Stores attribute value information
-15. `category`: Stores category information
-16. `category_attribute_names`: Junction table for the many-to-many relationship between categories and attribute names
+7. `base_entity_level`: Stores base entity level information
+8. `level`: Stores level information
+9. `base_entity_level_attributes`: Junction table for the many-to-many relationship between base entity levels and attributes
+10. `attribute`: Stores attribute information
+11. `attribute_name`: Stores attribute name information
+12. `attribute_translation`: Stores attribute translation information
+13. `attribute_value`: Stores attribute value information
+14. `category`: Stores category information
+15. `category_attribute_names`: Junction table for the many-to-many relationship between categories and attribute names
+16. `base_entity_category`: Junction table for the many-to-many relationship between base entities and categories
 
 ## Indexes and Constraints
 
@@ -169,7 +163,6 @@ The database schema uses the following sequences for generating primary key valu
 - `refresh_token_seq`: For the `refresh_token` table
 - `account_seq`: For the `account` table
 - `base_entity_seq`: For the `base_entity` table
-- `base_entity_name_seq`: For the `base_entity_name` table
 - `base_entity_level_seq`: For the `base_entity_level` table
 - `level_sequence`: For the `level` table
 - `attribute_sequence`: For the `attribute` table
