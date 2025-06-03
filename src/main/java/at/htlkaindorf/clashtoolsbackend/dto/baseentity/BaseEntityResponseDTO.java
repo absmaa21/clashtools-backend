@@ -1,6 +1,5 @@
 package at.htlkaindorf.clashtoolsbackend.dto.baseentity;
 
-import at.htlkaindorf.clashtoolsbackend.pojos.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,5 +14,5 @@ public class BaseEntityResponseDTO {
 
     private int level;
 
-    private Category category;
+    private Integer categoryId;
 }
