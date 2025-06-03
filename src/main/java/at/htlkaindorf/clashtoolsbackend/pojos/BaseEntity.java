@@ -29,11 +29,8 @@ public class BaseEntity {
     @Schema(description = "Set of levels associated with this base entity")
     private Set<BaseEntityLevel> baseEntityLevels = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-        name = "base_entity_category",
-        joinColumns = @JoinColumn(name = "base_entity_id"),
-        inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private Set<Category> categories = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category")
+    @Schema(description = "Category associated with this base entity")
+    private Category category;
 }

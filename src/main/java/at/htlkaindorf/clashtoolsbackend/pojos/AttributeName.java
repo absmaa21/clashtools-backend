@@ -25,6 +25,4 @@ public class AttributeName {
     @OneToMany(mappedBy = "attributeName", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true) // Cascade angepasst
     private Set<Attribute> attributes;
 
-    @ManyToMany(mappedBy = "attributeNames")
-    private Set<Category> categories;
 }

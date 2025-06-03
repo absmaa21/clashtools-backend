@@ -33,7 +33,6 @@ public interface AttributeNameMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "attributes", ignore = true)
-    @Mapping(target = "categories", ignore = true)
     AttributeName toEntity(AttributeNameDTO dto);
 
     /**

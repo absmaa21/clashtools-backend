@@ -22,11 +22,7 @@ public class BaseEntityName {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-        name = "base_entity_name_category",
-        joinColumns = @JoinColumn(name = "base_entity_name_id"),
-        inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private Set<Category> categories = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category")
+    private Category category;
 }

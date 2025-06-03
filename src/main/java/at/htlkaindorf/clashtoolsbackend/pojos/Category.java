@@ -1,33 +1,21 @@
 package at.htlkaindorf.clashtoolsbackend.pojos;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.Set;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
-public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
-    @SequenceGenerator(name = "category_seq", sequenceName = "category_sequence", allocationSize = 10)
-    private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String name;
-
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-        name = "category_attribute_name",
-        joinColumns = @JoinColumn(name = "category_id"),
-        inverseJoinColumns = @JoinColumn(name = "attribute_name_id")
-    )
-    private Set<AttributeName> attributeNames;
-
-    @ManyToMany(mappedBy = "categories", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<BaseEntity> baseEntities;
+/**
+ * Enum representing different categories of game entities.
+ */
+@Schema(description = "Categories of game entities")
+public enum Category {
+    TROOP,
+    HERO,
+    TRAP,
+    PET,
+    EQUIPMENT,
+    SIEGE_MACHINE,
+    SPELL,
+    ARMY,
+    RESOURCES,
+    DEFENSE,
+    WALL,
 }
