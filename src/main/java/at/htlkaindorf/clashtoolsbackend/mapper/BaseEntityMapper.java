@@ -2,6 +2,7 @@ package at.htlkaindorf.clashtoolsbackend.mapper;
 
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityRequestDTO;
+import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
 import at.htlkaindorf.clashtoolsbackend.pojos.Category;
 import org.mapstruct.Mapper;
@@ -12,6 +13,12 @@ import java.util.List;
 public interface BaseEntityMapper {
     @org.mapstruct.Mapping(target = "categoryId", expression = "java(mapCategoryToInteger(baseEntity.getCategory()))")
     BaseEntityDTO toDTO(BaseEntity baseEntity);
+
+    @org.mapstruct.Mapping(target = "categoryId", expression = "java(mapCategoryToInteger(baseEntity.getCategory()))")
+    BaseEntityResponseDTO toResponseDTO(BaseEntity baseEntity);
+
+    List<BaseEntityResponseDTO> toResponseDTOList(List<BaseEntity> baseEntities);
+
     BaseEntity toEntity(BaseEntityRequestDTO requestDTO);
     List<BaseEntityDTO> toDTOList(List<BaseEntity> baseEntities);
 

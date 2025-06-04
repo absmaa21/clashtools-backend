@@ -2,6 +2,7 @@ package at.htlkaindorf.clashtoolsbackend.controller;
 
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityRequestDTO;
+import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.Category;
 import at.htlkaindorf.clashtoolsbackend.service.BaseEntityService;
 import jakarta.validation.Valid;
@@ -26,28 +27,28 @@ public class BaseEntityController {
 
     /**
      * Get all base entities.
-     * Retrieves a list of all base entities in the system.
+     * Retrieves a list of all base entities in the system, including their baseEntityLevels.
      *
-     * @return ResponseEntity containing a list of BaseEntityDTO objects
+     * @return ResponseEntity containing a list of BaseEntityResponseDTO objects with baseEntityLevels included
      */
     @GetMapping
-    public ResponseEntity<List<BaseEntityDTO>> getAllBaseEntities() {
-        List<BaseEntityDTO> baseEntities = baseEntityService.getAllBaseEntities();
+    public ResponseEntity<List<BaseEntityResponseDTO>> getAllBaseEntities() {
+        List<BaseEntityResponseDTO> baseEntities = baseEntityService.getAllBaseEntitiesWithLevels();
         return ResponseEntity.ok(baseEntities);
     }
 
     /**
      * Get base entity by ID.
-     * Retrieves a specific base entity identified by its unique ID.
+     * Retrieves a specific base entity identified by its unique ID, including its baseEntityLevels.
      *
      * @param id The unique identifier of the base entity to retrieve
-     * @return ResponseEntity containing the requested BaseEntityDTO
+     * @return ResponseEntity containing the requested BaseEntityResponseDTO with baseEntityLevels included
      * @throws java.util.NoSuchElementException if no base entity with the given ID exists
      */
     @GetMapping("/{id}")
-    public ResponseEntity<BaseEntityDTO> getBaseEntityById(
+    public ResponseEntity<BaseEntityResponseDTO> getBaseEntityById(
             @PathVariable Long id) {
-        BaseEntityDTO baseEntity = baseEntityService.getBaseEntityById(id);
+        BaseEntityResponseDTO baseEntity = baseEntityService.getBaseEntityByIdWithLevels(id);
         return ResponseEntity.ok(baseEntity);
     }
 

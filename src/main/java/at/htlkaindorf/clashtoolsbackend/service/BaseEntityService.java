@@ -2,6 +2,7 @@ package at.htlkaindorf.clashtoolsbackend.service;
 
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityRequestDTO;
+import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.mapper.BaseEntityMapper;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
 import at.htlkaindorf.clashtoolsbackend.pojos.Category;
@@ -121,5 +122,32 @@ public class BaseEntityService {
     public List<BaseEntityDTO> getBaseEntitiesByNameContaining(String name) {
         List<BaseEntity> baseEntities = baseEntityRepository.findByNameContainingIgnoreCase(name);
         return baseEntityMapper.toDTOList(baseEntities);
+    }
+
+    /**
+     * Retrieves all base entities from the database with their baseEntityLevels included.
+     * This method fetches all base entities stored in the system and converts them to ResponseDTOs
+     * that include the baseEntityLevels for use in the presentation layer.
+     *
+     * @return A list of BaseEntityResponseDTO objects representing all base entities in the system with their levels
+     */
+    public List<BaseEntityResponseDTO> getAllBaseEntitiesWithLevels() {
+        List<BaseEntity> baseEntities = baseEntityRepository.findAll();
+        return baseEntityMapper.toResponseDTOList(baseEntities);
+    }
+
+    /**
+     * Retrieves a specific base entity by its unique identifier with its baseEntityLevels included.
+     * This method searches for a base entity with the given ID in the database,
+     * throws an exception if not found, and converts it to a ResponseDTO that includes the baseEntityLevels.
+     *
+     * @param id The unique identifier of the base entity to retrieve
+     * @return A BaseEntityResponseDTO representing the requested base entity with its levels
+     * @throws IllegalArgumentException If no base entity with the given ID exists in the database
+     */
+    public BaseEntityResponseDTO getBaseEntityByIdWithLevels(Long id) {
+        BaseEntity baseEntity = baseEntityRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("BaseEntity not found"));
+        return baseEntityMapper.toResponseDTO(baseEntity);
     }
 }
