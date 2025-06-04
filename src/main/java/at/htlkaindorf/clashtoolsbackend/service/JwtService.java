@@ -11,13 +11,16 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 
 /**
@@ -27,9 +30,18 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Automatisch erzeugt
+    @Value("${jwt.secret}")
+    private String secretString;
+
+    private SecretKey secretKey;
     private static final Duration EXPIRATION_TIME = Duration.ofHours(1); // 1h Token-Lebensdauer
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
+
+    @PostConstruct
+    public void init() {
+        byte[] keyBytes = Base64.getDecoder().decode(secretString);
+        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+    }
 
     /**
      * Generates a JWT token for the specified user.

@@ -2,7 +2,6 @@ package at.htlkaindorf.clashtoolsbackend.controller;
 
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelResponseDTO;
-import at.htlkaindorf.clashtoolsbackend.dto.baseentity.SimpleBaseEntityLevelRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.service.BaseEntityLevelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -66,20 +65,7 @@ public class BaseEntityLevelController {
         return ResponseEntity.ok(baseEntityLevels);
     }
 
-    /**
-     * Get base entity levels by level ID.
-     * Retrieves all base entity levels associated with a specific level.
-     *
-     * @param levelId The ID of the level to filter by
-     * @return ResponseEntity containing a list of BaseEntityLevelResponseDTO objects
-     * @throws IllegalArgumentException if no level with the given ID exists
-     */
-    @GetMapping("/level/{levelId}")
-    public ResponseEntity<List<BaseEntityLevelResponseDTO>> getBaseEntityLevelsByLevelId(
-            @PathVariable Long levelId) {
-        List<BaseEntityLevelResponseDTO> baseEntityLevels = baseEntityLevelService.getBaseEntityLevelsByLevelId(levelId);
-        return ResponseEntity.ok(baseEntityLevels);
-    }
+
 
     /**
      * Create a new base entity level.
@@ -150,18 +136,5 @@ public class BaseEntityLevelController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Delete base entity levels by level ID.
-     * Deletes all base entity levels associated with a specific level.
-     *
-     * @param levelId The ID of the level whose base entity levels should be deleted
-     * @return ResponseEntity with no content, indicating successful deletion
-     * @throws IllegalArgumentException if no level with the given ID exists
-     */
-    @DeleteMapping("/level/{levelId}")
-    public ResponseEntity<Void> deleteBaseEntityLevelsByLevelId(
-            @PathVariable Long levelId) {
-        baseEntityLevelService.deleteBaseEntityLevelsByLevelId(levelId);
-        return ResponseEntity.noContent().build();
-    }
+
 }
