@@ -40,11 +40,11 @@ public class BaseEntityLevel {
     private BaseEntity baseEntity;
 
     /**
-     * The level information for this base entity level.
+     * The level value for this base entity level.
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "level_id", nullable = false)
-    private Level level;
+    @NotNull
+    @Column(nullable = false)
+    private Integer level;
 
     /**
      * The attributes associated with this base entity level.

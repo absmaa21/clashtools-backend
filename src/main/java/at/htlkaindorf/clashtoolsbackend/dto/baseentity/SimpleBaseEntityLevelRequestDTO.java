@@ -35,10 +35,11 @@ public class SimpleBaseEntityLevelRequestDTO {
     private Long baseEntityId;
 
     /**
-     * The ID of the Level to associate with the BaseEntityLevel.
+     * The level value to associate with the BaseEntityLevel.
      */
-    @NotNull(message = "Level ID is mandatory")
-    private Long levelId;
+    @NotNull(message = "Level is mandatory")
+    @Min(value = 1, message = "Level must be a positive number")
+    private Integer level;
 
     /**
      * A set of Attribute IDs to associate with the BaseEntityLevel.

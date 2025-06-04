@@ -27,7 +27,6 @@ public class BaseEntityLevelService {
 
     private final BaseEntityLevelRepository baseEntityLevelRepository;
     private final BaseEntityRepository baseEntityRepository;
-    private final LevelRepository levelRepository;
     private final AttributeRepository attributeRepository;
     private final BaseEntityLevelMapper baseEntityLevelMapper;
     private final AccountRepository accountRepository;
@@ -77,19 +76,14 @@ public class BaseEntityLevelService {
     }
 
     /**
-     * Retrieves all base entity levels associated with a specific level.
-     * This method fetches all base entity levels with the given level ID and converts them to DTOs.
+     * Retrieves all base entity levels associated with a specific level value.
+     * This method fetches all base entity levels with the given level value and converts them to DTOs.
      *
-     * @param levelId The ID of the level to filter by
+     * @param level The level value to filter by
      * @return A list of BaseEntityLevelResponseDTO objects representing base entity levels with the specified level
-     * @throws IllegalArgumentException If no level with the given ID exists in the database
      */
-    public List<BaseEntityLevelResponseDTO> getBaseEntityLevelsByLevelId(Long levelId) {
-        // Verify that the level exists
-        levelRepository.findById(levelId)
-                .orElseThrow(() -> new IllegalArgumentException("Level not found"));
-
-        List<BaseEntityLevel> baseEntityLevels = baseEntityLevelRepository.findByLevelId(levelId);
+    public List<BaseEntityLevelResponseDTO> getBaseEntityLevelsByLevel(Integer level) {
+        List<BaseEntityLevel> baseEntityLevels = baseEntityLevelRepository.findByLevel(level);
         return baseEntityLevelMapper.toResponseDTOList(baseEntityLevels);
     }
 
@@ -100,7 +94,7 @@ public class BaseEntityLevelService {
      *
      * @param requestDTO The BaseEntityLevelRequestDTO containing the data for the new base entity level
      * @return A BaseEntityLevelResponseDTO representing the newly created base entity level
-     * @throws IllegalArgumentException If the base entity or level with the given IDs do not exist
+     * @throws IllegalArgumentException If the base entity with the given ID does not exist
      * @throws IllegalArgumentException If any of the attributes with the given IDs do not exist
      */
     public BaseEntityLevelResponseDTO createBaseEntityLevel(BaseEntityLevelRequestDTO requestDTO) {
@@ -108,12 +102,8 @@ public class BaseEntityLevelService {
         BaseEntity baseEntity = baseEntityRepository.findById(requestDTO.getBaseEntityId())
                 .orElseThrow(() -> new IllegalArgumentException("Base entity not found"));
 
-        // Verify that the level exists
-        Level level = levelRepository.findById(requestDTO.getLevelId())
-                .orElseThrow(() -> new IllegalArgumentException("Level not found"));
-
         // Check if a base entity level with the same base entity and level already exists
-        baseEntityLevelRepository.findByBaseEntityAndLevel(baseEntity, level)
+        baseEntityLevelRepository.findByBaseEntityAndLevel(baseEntity, requestDTO.getLevel())
                 .ifPresent(existingLevel -> {
                     throw new IllegalArgumentException("A base entity level with the same base entity and level already exists");
                 });
@@ -150,7 +140,7 @@ public class BaseEntityLevelService {
      * @param requestDTO The BaseEntityLevelRequestDTO containing the updated data
      * @return A BaseEntityLevelResponseDTO representing the updated base entity level
      * @throws IllegalArgumentException If no base entity level with the given ID exists in the database
-     * @throws IllegalArgumentException If the base entity or level with the given IDs do not exist
+     * @throws IllegalArgumentException If the base entity with the given ID does not exist
      * @throws IllegalArgumentException If any of the attributes with the given IDs do not exist
      */
     public BaseEntityLevelResponseDTO updateBaseEntityLevel(Long id, BaseEntityLevelRequestDTO requestDTO) {
@@ -161,12 +151,8 @@ public class BaseEntityLevelService {
         BaseEntity baseEntity = baseEntityRepository.findById(requestDTO.getBaseEntityId())
                 .orElseThrow(() -> new IllegalArgumentException("Base entity not found"));
 
-        // Verify that the level exists
-        Level level = levelRepository.findById(requestDTO.getLevelId())
-                .orElseThrow(() -> new IllegalArgumentException("Level not found"));
-
         // Check if a base entity level with the same base entity and level already exists (and it's not the one being updated)
-        baseEntityLevelRepository.findByBaseEntityAndLevel(baseEntity, level)
+        baseEntityLevelRepository.findByBaseEntityAndLevel(baseEntity, requestDTO.getLevel())
                 .ifPresent(existingLevel -> {
                     if (!existingLevel.getId().equals(id)) {
                         throw new IllegalArgumentException("A base entity level with the same base entity and level already exists");
@@ -183,7 +169,7 @@ public class BaseEntityLevelService {
         }
 
         baseEntityLevel.setBaseEntity(baseEntity);
-        baseEntityLevel.setLevel(level);
+        baseEntityLevel.setLevel(requestDTO.getLevel());
         baseEntityLevel.setAttributes(attributes);
 
         // Update the additional fields
@@ -221,15 +207,12 @@ public class BaseEntityLevelService {
     }
 
     /**
-     * Deletes all base entity levels associated with a specific level.
-     * This method removes all base entity levels with the given level ID from the database.
+     * Deletes all base entity levels associated with a specific level value.
+     * This method removes all base entity levels with the given level value from the database.
      *
-     * @param levelId The ID of the level whose base entity levels should be deleted
-     * @throws IllegalArgumentException If no level with the given ID exists in the database
+     * @param level The level value whose base entity levels should be deleted
      */
-    public void deleteBaseEntityLevelsByLevelId(Long levelId) {
-        Level level = levelRepository.findById(levelId)
-                .orElseThrow(() -> new IllegalArgumentException("Level not found"));
+    public void deleteBaseEntityLevelsByLevel(Integer level) {
         baseEntityLevelRepository.deleteByLevel(level);
     }
 }

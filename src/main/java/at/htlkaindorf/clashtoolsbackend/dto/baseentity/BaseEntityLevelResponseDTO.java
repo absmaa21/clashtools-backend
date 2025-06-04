@@ -1,7 +1,6 @@
 package at.htlkaindorf.clashtoolsbackend.dto.baseentity;
 
 import at.htlkaindorf.clashtoolsbackend.dto.attribute.AttributeResponseDTO;
-import at.htlkaindorf.clashtoolsbackend.dto.level.LevelResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.ResourceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,9 +30,9 @@ public class BaseEntityLevelResponseDTO {
     private BaseEntityResponseDTO baseEntity;
 
     /**
-     * The level information for this base entity level.
+     * The level value for this base entity level.
      */
-    private LevelResponseDTO level;
+    private Integer level;
 
     /**
      * The attributes associated with this base entity level.

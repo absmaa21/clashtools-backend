@@ -3,7 +3,6 @@ package at.htlkaindorf.clashtoolsbackend.repositories;
 import at.htlkaindorf.clashtoolsbackend.pojos.Attribute;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntityLevel;
-import at.htlkaindorf.clashtoolsbackend.pojos.Level;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -34,38 +33,30 @@ public interface BaseEntityLevelRepository extends JpaRepository<BaseEntityLevel
     List<BaseEntityLevel> findByBaseEntityId(Long baseEntityId);
 
     /**
-     * Find all base entity levels associated with a specific level
+     * Find all base entity levels associated with a specific level value
      *
-     * @param level the level to search for
+     * @param level the level value to search for
      * @return a list of base entity levels
      */
-    List<BaseEntityLevel> findByLevel(Level level);
+    List<BaseEntityLevel> findByLevel(Integer level);
 
     /**
-     * Find all base entity levels associated with a specific level ID
-     *
-     * @param levelId the ID of the level to search for
-     * @return a list of base entity levels
-     */
-    List<BaseEntityLevel> findByLevelId(Long levelId);
-
-    /**
-     * Find a base entity level by its base entity and level
+     * Find a base entity level by its base entity and level value
      *
      * @param baseEntity the base entity to search for
-     * @param level the level to search for
+     * @param level the level value to search for
      * @return the base entity level if found
      */
-    Optional<BaseEntityLevel> findByBaseEntityAndLevel(BaseEntity baseEntity, Level level);
+    Optional<BaseEntityLevel> findByBaseEntityAndLevel(BaseEntity baseEntity, Integer level);
 
     /**
-     * Find a base entity level by its base entity ID and level ID
+     * Find a base entity level by its base entity ID and level value
      *
      * @param baseEntityId the ID of the base entity to search for
-     * @param levelId the ID of the level to search for
+     * @param level the level value to search for
      * @return the base entity level if found
      */
-    Optional<BaseEntityLevel> findByBaseEntityIdAndLevelId(Long baseEntityId, Long levelId);
+    Optional<BaseEntityLevel> findByBaseEntityIdAndLevel(Long baseEntityId, Integer level);
 
     /**
      * Find all base entity levels that have a specific attribute
@@ -83,9 +74,9 @@ public interface BaseEntityLevelRepository extends JpaRepository<BaseEntityLevel
     void deleteByBaseEntity(BaseEntity baseEntity);
 
     /**
-     * Delete all base entity levels associated with a specific level
+     * Delete all base entity levels associated with a specific level value
      *
-     * @param level the level whose base entity levels should be deleted
+     * @param level the level value whose base entity levels should be deleted
      */
-    void deleteByLevel(Level level);
+    void deleteByLevel(Integer level);
 }

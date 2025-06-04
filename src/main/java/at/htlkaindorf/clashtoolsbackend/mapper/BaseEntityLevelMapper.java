@@ -5,7 +5,6 @@ import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelResponseDT
 import at.htlkaindorf.clashtoolsbackend.pojos.Attribute;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntityLevel;
-import at.htlkaindorf.clashtoolsbackend.pojos.Level;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -45,7 +44,7 @@ public interface BaseEntityLevelMapper {
      */
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "baseEntityId", target = "baseEntity", qualifiedByName = "baseEntityIdToEntity")
-    @Mapping(source = "levelId", target = "level", qualifiedByName = "levelIdToEntity")
+    @Mapping(source = "level", target = "level")
     @Mapping(source = "attributeIds", target = "attributes", qualifiedByName = "attributeIdsToEntities")
     @Mapping(source = "resourceType", target = "resourceType")
     @Mapping(source = "upgradeCost", target = "upgradeCost")
@@ -78,18 +77,13 @@ public interface BaseEntityLevelMapper {
     }
 
     /**
-     * Converts a level ID to a Level entity.
+     * Maps the level value directly.
      *
-     * @param id The level ID
-     * @return The Level entity with the given ID
+     * @param level The level value
+     * @return The level value
      */
     @Named("levelIdToEntity")
-    default Level levelIdToEntity(Long id) {
-        if (id == null) {
-            return null;
-        }
-        Level level = new Level();
-        level.setId(id);
+    default Integer levelIdToEntity(Integer level) {
         return level;
     }
 
