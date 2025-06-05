@@ -31,4 +31,23 @@ public interface BaseEntityRepository extends JpaRepository<BaseEntity, Long> {
      */
     @Query("SELECT be FROM BaseEntity be WHERE LOWER(be.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<BaseEntity> findByNameContainingIgnoreCase(String name);
+
+    /**
+     * Find all base entities with their baseEntityLevels eagerly loaded.
+     * This query uses a join fetch to load the baseEntityLevels in a single query.
+     *
+     * @return A list of BaseEntity objects with their baseEntityLevels eagerly loaded
+     */
+    @Query("SELECT DISTINCT be FROM BaseEntity be LEFT JOIN FETCH be.baseEntityLevels")
+    List<BaseEntity> findAllWithLevels();
+
+    /**
+     * Find a base entity by ID with its baseEntityLevels eagerly loaded.
+     * This query uses a join fetch to load the baseEntityLevels in a single query.
+     *
+     * @param id The ID of the base entity to find
+     * @return The BaseEntity object with the given ID, with its baseEntityLevels eagerly loaded
+     */
+    @Query("SELECT be FROM BaseEntity be LEFT JOIN FETCH be.baseEntityLevels WHERE be.id = :id")
+    BaseEntity findByIdWithLevels(Long id);
 }
