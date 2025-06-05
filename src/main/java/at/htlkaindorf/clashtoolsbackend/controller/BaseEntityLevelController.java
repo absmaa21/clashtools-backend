@@ -135,6 +135,4 @@ public class BaseEntityLevelController {
         baseEntityLevelService.deleteBaseEntityLevelsByBaseEntityId(baseEntityId);
         return ResponseEntity.noContent().build();
     }
-
-
 }

@@ -9,12 +9,13 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {SimplifiedBaseEntityLevelMapper.class})
 public interface BaseEntityMapper {
     @org.mapstruct.Mapping(target = "categoryId", expression = "java(mapCategoryToInteger(baseEntity.getCategory()))")
     BaseEntityDTO toDTO(BaseEntity baseEntity);
 
     @org.mapstruct.Mapping(target = "categoryId", expression = "java(mapCategoryToInteger(baseEntity.getCategory()))")
+    @org.mapstruct.Mapping(target = "baseEntityLevels", source = "baseEntityLevels")
     BaseEntityResponseDTO toResponseDTO(BaseEntity baseEntity);
 
     List<BaseEntityResponseDTO> toResponseDTOList(List<BaseEntity> baseEntities);
