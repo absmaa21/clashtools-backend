@@ -9,7 +9,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,13 +92,7 @@ public class JwtService {
         }
     }
 
-    /**
-     * Validates a JWT token.
-     * Checks if the token is properly signed and not expired.
-     *
-     * @param token The JWT token string to validate
-     * @return true if the token is valid, false otherwise
-     */
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
