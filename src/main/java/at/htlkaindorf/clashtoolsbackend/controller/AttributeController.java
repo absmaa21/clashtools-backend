@@ -31,7 +31,7 @@ public class AttributeController {
      */
     @GetMapping
     public ResponseEntity<List<AttributeResponseDTO>> getAllAttributes() {
-        List<AttributeResponseDTO> attributes = attributeService.getAllAttributes();
+        List<AttributeResponseDTO> attributes = attributeService.getAll();
         return ResponseEntity.ok(attributes);
     }
 
@@ -46,7 +46,7 @@ public class AttributeController {
     @GetMapping("/{id}")
     public ResponseEntity<AttributeResponseDTO> getAttributeById(
             @PathVariable Long id) {
-        AttributeResponseDTO attribute = attributeService.getAttributeById(id);
+        AttributeResponseDTO attribute = attributeService.getById(id);
         return ResponseEntity.ok(attribute);
     }
 
@@ -77,7 +77,7 @@ public class AttributeController {
     @PostMapping
     public ResponseEntity<AttributeResponseDTO> createAttribute(
             @Valid @RequestBody AttributeRequestDTO request) {
-        AttributeResponseDTO attribute = attributeService.createAttribute(request);
+        AttributeResponseDTO attribute = attributeService.create(request);
         return ResponseEntity.ok(attribute);
     }
 
@@ -97,7 +97,7 @@ public class AttributeController {
     public ResponseEntity<AttributeResponseDTO> updateAttribute(
             @PathVariable Long id,
             @Valid @RequestBody AttributeRequestDTO request) {
-        AttributeResponseDTO attribute = attributeService.updateAttribute(id, request);
+        AttributeResponseDTO attribute = attributeService.update(id, request);
         return ResponseEntity.ok(attribute);
     }
 
@@ -112,7 +112,7 @@ public class AttributeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAttribute(
             @PathVariable Long id) {
-        attributeService.deleteAttribute(id);
+        attributeService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

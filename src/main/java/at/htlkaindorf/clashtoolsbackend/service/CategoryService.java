@@ -3,7 +3,6 @@ package at.htlkaindorf.clashtoolsbackend.service;
 import at.htlkaindorf.clashtoolsbackend.pojos.Category;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,10 +13,11 @@ import java.util.List;
 public class CategoryService {
 
     /**
-     * Get all available categories
-     * @return a list of all categories
+     * Gets all available categories from the Category enum
+     *
+     * @return Immutable list of all categories
      */
     public List<Category> getAllCategories() {
-        return Arrays.asList(Category.values());
+        return List.of(Category.values());
     }
 }

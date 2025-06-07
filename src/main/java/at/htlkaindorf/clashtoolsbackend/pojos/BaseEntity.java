@@ -2,11 +2,12 @@ package at.htlkaindorf.clashtoolsbackend.pojos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import jakarta.persistence.Index;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,9 +16,12 @@ import java.util.Set;
 @Table(indexes = {
     @Index(name = "idx_base_entity_category", columnList = "category")
 })
-@Data
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "baseEntityLevels")
 @Schema(description = "Entity representing a base game object")
 public class BaseEntity {
     @Id
@@ -30,8 +34,9 @@ public class BaseEntity {
     @Schema(description = "Name of the base entity")
     private String name;
 
-    @OneToMany(mappedBy = "baseEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "baseEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Schema(description = "Set of levels associated with this base entity")
+    @Builder.Default
     private Set<BaseEntityLevel> baseEntityLevels = new HashSet<>();
 
     @Enumerated(EnumType.STRING)

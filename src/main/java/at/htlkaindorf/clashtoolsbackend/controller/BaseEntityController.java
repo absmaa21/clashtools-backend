@@ -1,12 +1,15 @@
 package at.htlkaindorf.clashtoolsbackend.controller;
 
+import at.htlkaindorf.clashtoolsbackend.dto.ApiResponse;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityResponseDTO;
+import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
 import at.htlkaindorf.clashtoolsbackend.pojos.Category;
+import at.htlkaindorf.clashtoolsbackend.repositories.projections.BaseEntitySummary;
 import at.htlkaindorf.clashtoolsbackend.service.BaseEntityService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,100 +18,57 @@ import java.util.List;
 /**
  * Base Entity Controller.
  * Provides REST API endpoints for managing base entities in the system.
- * This controller handles CRUD operations (Create, Read, Update, Delete) for base entities,
- * which are fundamental game elements in the Clash Tools application.
+ * This controller extends the CrudController to inherit common CRUD operations
+ * and adds additional specialized endpoints for base entities.
  */
 @RestController
 @RequestMapping("/api/base-entities")
-@RequiredArgsConstructor
-public class BaseEntityController {
+@Tag(name = "Base Entity", description = "API for managing base entities")
+public class BaseEntityController extends CrudController<BaseEntity, BaseEntityDTO, BaseEntityRequestDTO, Long> {
 
     private final BaseEntityService baseEntityService;
 
     /**
-     * Get all base entities.
-     * Retrieves a list of all base entities in the system, including their baseEntityLevels.
+     * Constructor for dependency injection.
      *
-     * @return ResponseEntity containing a list of BaseEntityResponseDTO objects with baseEntityLevels included
+     * @param baseEntityService The service for BaseEntity operations
      */
-    @GetMapping
+    public BaseEntityController(BaseEntityService baseEntityService) {
+        super(baseEntityService);
+        this.baseEntityService = baseEntityService;
+    }
+
+    /**
+     * Get all base entities with their levels.
+     *
+     * @return List of base entities with levels
+     */
+    @GetMapping("/with-levels")
     public ResponseEntity<List<BaseEntityResponseDTO>> getAllBaseEntities() {
         List<BaseEntityResponseDTO> baseEntities = baseEntityService.getAllBaseEntitiesWithLevels();
         return ResponseEntity.ok(baseEntities);
     }
 
     /**
-     * Get base entity by ID.
-     * Retrieves a specific base entity identified by its unique ID, including its baseEntityLevels.
+     * Get base entity by ID with its levels.
      *
-     * @param id The unique identifier of the base entity to retrieve
-     * @return ResponseEntity containing the requested BaseEntityResponseDTO with baseEntityLevels included
-     * @throws java.util.NoSuchElementException if no base entity with the given ID exists
+     * @param id The base entity ID
+     * @return The base entity with levels
+     * @throws IllegalArgumentException if entity not found
      */
-    @GetMapping("/{id}")
+    @GetMapping("/with-levels/{id}")
     public ResponseEntity<BaseEntityResponseDTO> getBaseEntityById(
             @PathVariable Long id) {
         BaseEntityResponseDTO baseEntity = baseEntityService.getBaseEntityByIdWithLevels(id);
         return ResponseEntity.ok(baseEntity);
     }
 
-    /**
-     * Create a new base entity.
-     * Creates a new base entity with the provided information. The request is validated
-     * to ensure all required fields are present and valid.
-     *
-     * @param request The BaseEntityRequestDTO containing the information for the new base entity
-     * @return ResponseEntity containing the newly created BaseEntityDTO
-     * @throws jakarta.validation.ConstraintViolationException if validation fails
-     */
-    @PostMapping
-    public ResponseEntity<BaseEntityDTO> createBaseEntity(
-            @Valid @RequestBody BaseEntityRequestDTO request) {
-        BaseEntityDTO baseEntity = baseEntityService.createBaseEntity(request);
-        return ResponseEntity.ok(baseEntity);
-    }
-
-    /**
-     * Update a base entity.
-     * Updates an existing base entity identified by its unique ID with the provided information.
-     * The request is validated to ensure all required fields are present and valid.
-     *
-     * @param id The unique identifier of the base entity to update
-     * @param request The BaseEntityRequestDTO containing the updated information
-     * @return ResponseEntity containing the updated BaseEntityDTO
-     * @throws java.util.NoSuchElementException if no base entity with the given ID exists
-     * @throws jakarta.validation.ConstraintViolationException if validation fails
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<BaseEntityDTO> updateBaseEntity(
-            @PathVariable Long id,
-            @Valid @RequestBody BaseEntityRequestDTO request) {
-        BaseEntityDTO baseEntity = baseEntityService.updateBaseEntity(id, request);
-        return ResponseEntity.ok(baseEntity);
-    }
-
-    /**
-     * Delete a base entity.
-     * Deletes a base entity identified by its unique ID. If the entity doesn't exist,
-     * the operation still returns a successful response.
-     *
-     * @param id The unique identifier of the base entity to delete
-     * @return ResponseEntity with no content, indicating successful deletion
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBaseEntity(
-            @PathVariable Long id) {
-        baseEntityService.deleteBaseEntity(id);
-        return ResponseEntity.noContent().build();
-    }
 
     /**
      * Get base entities by category.
-     * Retrieves a list of base entities filtered by the specified category.
-     * This endpoint uses an optimized query that leverages database indexing.
      *
      * @param category The category to filter by
-     * @return ResponseEntity containing a list of BaseEntityDTO objects
+     * @return List of base entities in the specified category
      */
     @GetMapping("/category/{category}")
     public ResponseEntity<List<BaseEntityDTO>> getBaseEntitiesByCategory(
@@ -118,17 +78,45 @@ public class BaseEntityController {
     }
 
     /**
-     * Search base entities by name.
-     * Retrieves a list of base entities with names containing the specified string (case-insensitive).
-     * This endpoint uses an optimized query for case-insensitive name searching.
+     * Search base entities by name (case-insensitive).
      *
      * @param name The name substring to search for
-     * @return ResponseEntity containing a list of BaseEntityDTO objects
+     * @return List of base entities matching the search term
      */
     @GetMapping("/search")
     public ResponseEntity<List<BaseEntityDTO>> searchBaseEntitiesByName(
             @RequestParam String name) {
         List<BaseEntityDTO> baseEntities = baseEntityService.getBaseEntitiesByNameContaining(name);
         return ResponseEntity.ok(baseEntities);
+    }
+
+    /**
+     * Get base entity summaries.
+     * This endpoint uses a projection to efficiently retrieve only the necessary data
+     * without loading the entire entity and its relationships.
+     * It's useful for list views and search results where only basic information is needed.
+     *
+     * @return List of base entity summaries
+     */
+    @GetMapping("/summaries")
+    public ResponseEntity<ApiResponse<List<BaseEntitySummary>>> getBaseEntitySummaries() {
+        List<BaseEntitySummary> summaries = baseEntityService.getAllBaseEntitySummaries();
+        return ResponseEntity.ok(ApiResponse.success(summaries));
+    }
+
+    /**
+     * Get base entity summaries by category.
+     * This endpoint uses a projection to efficiently retrieve only the necessary data
+     * without loading the entire entity and its relationships.
+     * It's useful for list views and search results where only basic information is needed.
+     *
+     * @param category The category to filter by
+     * @return List of base entity summaries in the specified category
+     */
+    @GetMapping("/summaries/category/{category}")
+    public ResponseEntity<ApiResponse<List<BaseEntitySummary>>> getBaseEntitySummariesByCategory(
+            @PathVariable Category category) {
+        List<BaseEntitySummary> summaries = baseEntityService.getBaseEntitySummariesByCategory(category);
+        return ResponseEntity.ok(ApiResponse.success(summaries));
     }
 }

@@ -9,7 +9,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,16 +16,19 @@ import java.util.stream.Collectors;
  * Mapper interface for converting between BaseEntityLevel entities and DTOs.
  * This mapper handles the conversion of BaseEntityLevel entities to response DTOs
  * and request DTOs to entities, including the mapping of related entities.
+ * Extends the generic EntityMapper interface with specific entity and DTO types.
  */
 @Mapper(componentModel = "spring", uses = {BaseEntityMapper.class, AttributeMapper.class})
-public interface BaseEntityLevelMapper {
+public interface BaseEntityLevelMapper extends EntityMapper<BaseEntityLevel, BaseEntityLevelResponseDTO, BaseEntityLevelRequestDTO> {
 
     /**
      * Converts a BaseEntityLevel entity to a BaseEntityLevelResponseDTO.
+     * This method overrides the toDTO method from EntityMapper.
      *
-     * @param baseEntityLevel The entity to convert
+     * @param entity The entity to convert
      * @return The converted response DTO
      */
+    @Override
     @Mapping(source = "baseEntity", target = "baseEntity")
     @Mapping(source = "level", target = "level")
     @Mapping(source = "attributes", target = "attributes")
@@ -34,7 +36,7 @@ public interface BaseEntityLevelMapper {
     @Mapping(source = "upgradeCost", target = "upgradeCost")
     @Mapping(source = "upgradeTime", target = "upgradeTime")
     @Mapping(source = "imgPath", target = "imgPath")
-    BaseEntityLevelResponseDTO toResponseDTO(BaseEntityLevel baseEntityLevel);
+    BaseEntityLevelResponseDTO toDTO(BaseEntityLevel entity);
 
     /**
      * Converts a BaseEntityLevelRequestDTO to a BaseEntityLevel entity.
@@ -51,14 +53,6 @@ public interface BaseEntityLevelMapper {
     @Mapping(source = "upgradeTime", target = "upgradeTime")
     @Mapping(source = "imgPath", target = "imgPath")
     BaseEntityLevel toEntity(BaseEntityLevelRequestDTO requestDTO);
-
-    /**
-     * Converts a list of BaseEntityLevel entities to a list of BaseEntityLevelResponseDTOs.
-     *
-     * @param baseEntityLevels The list of entities to convert
-     * @return The list of converted response DTOs
-     */
-    List<BaseEntityLevelResponseDTO> toResponseDTOList(List<BaseEntityLevel> baseEntityLevels);
 
     /**
      * Converts a base entity ID to a BaseEntity entity.

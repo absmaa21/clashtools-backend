@@ -9,8 +9,12 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
+/**
+ * Mapper interface for converting between BaseEntity entities and DTOs.
+ * Extends the generic EntityMapper interface with specific entity and DTO types.
+ */
 @Mapper(componentModel = "spring", uses = {SimplifiedBaseEntityLevelMapper.class})
-public interface BaseEntityMapper {
+public interface BaseEntityMapper extends EntityMapper<BaseEntity, BaseEntityDTO, BaseEntityRequestDTO> {
     @org.mapstruct.Mapping(target = "categoryId", expression = "java(mapCategoryToInteger(baseEntity.getCategory()))")
     BaseEntityDTO toDTO(BaseEntity baseEntity);
 

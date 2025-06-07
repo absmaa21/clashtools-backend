@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface AccountMapper {
+public interface AccountMapper extends EntityMapper<Account, AccountResponseDTO, AccountRequestDTO> {
 
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.username", target = "username")

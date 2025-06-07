@@ -223,6 +223,20 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles EntityNotFoundException.
+     * This method is called when an EntityNotFoundException is thrown in the application.
+     * It returns a 404 NOT_FOUND response with details about the error.
+     *
+     * @param ex The EntityNotFoundException that was thrown
+     * @param request The HTTP request that triggered the exception
+     * @return ResponseEntity containing an ErrorResponse with details about the error
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex, HttpServletRequest request) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND, request, null);
+    }
+
+    /**
      * Builds a standardized error response.
      * This helper method creates a consistent error response structure for all exception handlers.
      * It includes timestamp, HTTP status, error message, request path, and optional field-specific errors.

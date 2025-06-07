@@ -5,7 +5,6 @@ import at.htlkaindorf.clashtoolsbackend.mapper.AttributeNameMapper;
 import at.htlkaindorf.clashtoolsbackend.pojos.AttributeName;
 import at.htlkaindorf.clashtoolsbackend.repositories.AttributeNameRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,99 +13,65 @@ import java.util.List;
  * Service for managing attribute names in the system.
  * This service provides methods for creating, retrieving, updating, and deleting attribute names,
  * which represent the types of attributes that can be assigned to base entities in the Clash Tools application.
- * It acts as an intermediary between the controller layer and the repository layer,
- * handling business logic and data transformation.
+ * It extends AbstractCrudService to inherit common CRUD operations.
  */
 @Service
-@RequiredArgsConstructor
 @Tag(name = "AttributeNameService", description = "Service for managing attribute names")
-public class AttributeNameService {
+public class AttributeNameService extends AbstractCrudService<AttributeName, AttributeNameDTO, AttributeNameDTO, Long> {
 
     private final AttributeNameRepository attributeNameRepository;
     private final AttributeNameMapper attributeNameMapper;
 
-    /**
-     * Retrieves all attribute names from the database.
-     * This method fetches all attribute names stored in the system and converts them to DTOs
-     * for use in the presentation layer.
-     *
-     * @return A list of AttributeNameDTO objects representing all attribute names in the system
-     */
-    public List<AttributeNameDTO> getAllAttributeNames() {
-        List<AttributeName> attributeNames = attributeNameRepository.findAll();
-        return attributeNameMapper.toDTOList(attributeNames);
+    public AttributeNameService(AttributeNameRepository attributeNameRepository, AttributeNameMapper attributeNameMapper) {
+        super(attributeNameRepository, attributeNameMapper);
+        this.attributeNameRepository = attributeNameRepository;
+        this.attributeNameMapper = attributeNameMapper;
     }
 
-    /**
-     * Retrieves a specific attribute name by its unique identifier.
-     * This method searches for an attribute name with the given ID in the database,
-     * throws an exception if not found, and converts it to a DTO for the presentation layer.
-     *
-     * @param id The unique identifier of the attribute name to retrieve
-     * @return An AttributeNameDTO representing the requested attribute name
-     * @throws IllegalArgumentException If no attribute name with the given ID exists in the database
-     */
-    public AttributeNameDTO getAttributeNameById(Long id) {
-        AttributeName attributeName = attributeNameRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Attribute name not found"));
-        return attributeNameMapper.toDTO(attributeName);
+    @Override
+    protected void setEntityId(AttributeName entity, Long id) {
+        entity.setId(id);
     }
 
     /**
      * Creates a new attribute name in the database.
-     * This method converts the provided DTO to an entity object,
-     * persists it to the database, and returns the created entity as a DTO.
+     * This method overrides the default implementation to add validation.
      *
-     * @param attributeNameDTO The AttributeNameDTO containing the data for the new attribute name
+     * @param request The AttributeNameDTO containing the data for the new attribute name
      * @return An AttributeNameDTO representing the newly created attribute name
      * @throws IllegalArgumentException If an attribute name with the same name already exists
      */
-    public AttributeNameDTO createAttributeName(AttributeNameDTO attributeNameDTO) {
-        if (attributeNameRepository.existsByName(attributeNameDTO.getName())) {
+    @Override
+    public AttributeNameDTO create(AttributeNameDTO request) {
+        if (attributeNameRepository.existsByName(request.getName())) {
             throw new IllegalArgumentException("Attribute name already exists");
         }
 
-        AttributeName attributeName = attributeNameMapper.toEntity(attributeNameDTO);
-        AttributeName savedAttributeName = attributeNameRepository.save(attributeName);
-        return attributeNameMapper.toDTO(savedAttributeName);
+        return super.create(request);
     }
 
     /**
      * Updates an existing attribute name in the database.
-     * This method retrieves the attribute name with the given ID, updates its properties
-     * with the values from the DTO, persists the changes to the database,
-     * and returns the updated entity as a DTO.
+     * This method overrides the default implementation to add validation.
      *
      * @param id The unique identifier of the attribute name to update
-     * @param attributeNameDTO The AttributeNameDTO containing the updated data
+     * @param request The AttributeNameDTO containing the updated data
      * @return An AttributeNameDTO representing the updated attribute name
      * @throws IllegalArgumentException If no attribute name with the given ID exists in the database
      * @throws IllegalArgumentException If an attribute name with the same name already exists (and it's not the one being updated)
      */
-    public AttributeNameDTO updateAttributeName(Long id, AttributeNameDTO attributeNameDTO) {
-        AttributeName attributeName = attributeNameRepository.findById(id)
+    @Override
+    public AttributeNameDTO update(Long id, AttributeNameDTO request) {
+        AttributeName attributeName = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Attribute name not found"));
 
         // Check if the name is being changed and if the new name already exists
-        if (!attributeName.getName().equals(attributeNameDTO.getName()) &&
-                attributeNameRepository.existsByName(attributeNameDTO.getName())) {
+        if (!attributeName.getName().equals(request.getName()) &&
+                attributeNameRepository.existsByName(request.getName())) {
             throw new IllegalArgumentException("Attribute name already exists");
         }
 
-        attributeName.setName(attributeNameDTO.getName());
-        AttributeName updatedAttributeName = attributeNameRepository.save(attributeName);
-        return attributeNameMapper.toDTO(updatedAttributeName);
-    }
-
-    /**
-     * Deletes an attribute name from the database.
-     * This method removes the attribute name with the given ID from the database.
-     * If no entity with the given ID exists, the operation completes silently.
-     *
-     * @param id The unique identifier of the attribute name to delete
-     */
-    public void deleteAttributeName(Long id) {
-        attributeNameRepository.deleteById(id);
+        return super.update(id, request);
     }
 
     /**

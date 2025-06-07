@@ -2,56 +2,99 @@ package at.htlkaindorf.clashtoolsbackend.dto.baseentity;
 
 import at.htlkaindorf.clashtoolsbackend.dto.attribute.AttributeResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.ResourceType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Simplified Data Transfer Object for BaseEntityLevel information.
- * This DTO contains all the information about a base entity level,
+ * Record for representing a simplified base entity level.
+ * This record contains all the information about a base entity level,
  * but without the reference back to the base entity to avoid circular references.
+ *
+ * @param id The unique identifier for the base entity level
+ * @param level The level value for this base entity level
+ * @param attributes The attributes associated with this base entity level
+ * @param resourceType The type of resource required for upgrading this base entity level
+ * @param upgradeCost The cost to upgrade to this level, in the specified resource type
+ * @param upgradeTime The time required to upgrade to this level, in seconds
+ * @param imgPath The path to the image representing this base entity level
  */
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class SimplifiedBaseEntityLevelDTO {
+public record SimplifiedBaseEntityLevelDTO(
+    Long id,
+    Integer level,
+    Set<AttributeResponseDTO> attributes,
+    ResourceType resourceType,
+    Integer upgradeCost,
+    Integer upgradeTime,
+    String imgPath
+) {
     /**
-     * The unique identifier for the base entity level.
+     * Default constructor for deserialization.
      */
-    private Long id;
+    public SimplifiedBaseEntityLevelDTO() {
+        this(null, null, new HashSet<>(), null, null, null, null);
+    }
 
     /**
-     * The level value for this base entity level.
+     * Static factory method to create a builder for this record.
+     * This provides similar functionality to the Lombok @Builder annotation.
+     *
+     * @return A new builder for creating SimplifiedBaseEntityLevelDTO instances
      */
-    private Integer level;
+    public static Builder builder() {
+        return new Builder();
+    }
 
     /**
-     * The attributes associated with this base entity level.
+     * Builder class for SimplifiedBaseEntityLevelDTO.
+     * This provides similar functionality to the Lombok @Builder annotation.
      */
-    private Set<AttributeResponseDTO> attributes;
+    public static class Builder {
+        private Long id;
+        private Integer level;
+        private Set<AttributeResponseDTO> attributes = new HashSet<>();
+        private ResourceType resourceType;
+        private Integer upgradeCost;
+        private Integer upgradeTime;
+        private String imgPath;
 
-    /**
-     * The type of resource required for upgrading this base entity level.
-     */
-    private ResourceType resourceType;
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
 
-    /**
-     * The cost to upgrade to this level, in the specified resource type.
-     */
-    private Integer upgradeCost;
+        public Builder level(Integer level) {
+            this.level = level;
+            return this;
+        }
 
-    /**
-     * The time required to upgrade to this level, in seconds.
-     */
-    private Integer upgradeTime;
+        public Builder attributes(Set<AttributeResponseDTO> attributes) {
+            this.attributes = attributes;
+            return this;
+        }
 
-    /**
-     * The path to the image representing this base entity level.
-     * This can be a relative path within the application or a full URL.
-     */
-    private String imgPath;
+        public Builder resourceType(ResourceType resourceType) {
+            this.resourceType = resourceType;
+            return this;
+        }
+
+        public Builder upgradeCost(Integer upgradeCost) {
+            this.upgradeCost = upgradeCost;
+            return this;
+        }
+
+        public Builder upgradeTime(Integer upgradeTime) {
+            this.upgradeTime = upgradeTime;
+            return this;
+        }
+
+        public Builder imgPath(String imgPath) {
+            this.imgPath = imgPath;
+            return this;
+        }
+
+        public SimplifiedBaseEntityLevelDTO build() {
+            return new SimplifiedBaseEntityLevelDTO(id, level, attributes, resourceType, upgradeCost, upgradeTime, imgPath);
+        }
+    }
 }

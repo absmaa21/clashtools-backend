@@ -982,28 +982,6 @@ components:
           type: object
           description: Value of the attribute, can be of different types based on valueType
 
-    UserDTO:
-      type: object
-      description: DTO for User information
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: Unique identifier of the user
-          example: 1
-        username:
-          type: string
-          description: Username of the user
-          example: john_doe
-        email:
-          type: string
-          format: email
-          description: Email address of the user
-          example: john.doe@example.com
-        role:
-          type: string
-          description: Role of the user
-          example: USER
 
     AccountEntityDTO:
       type: object

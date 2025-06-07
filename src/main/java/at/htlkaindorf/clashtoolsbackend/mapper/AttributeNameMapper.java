@@ -12,7 +12,7 @@ import java.util.List;
  * This interface uses MapStruct to generate the implementation at compile time.
  */
 @Mapper(componentModel = "spring")
-public interface AttributeNameMapper {
+public interface AttributeNameMapper extends EntityMapper<AttributeName, AttributeNameDTO, AttributeNameDTO> {
 
     /**
      * Converts an AttributeName entity to an AttributeNameDTO.

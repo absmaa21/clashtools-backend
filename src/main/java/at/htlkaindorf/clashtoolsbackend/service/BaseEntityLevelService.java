@@ -2,11 +2,14 @@ package at.htlkaindorf.clashtoolsbackend.service;
 
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelResponseDTO;
-import at.htlkaindorf.clashtoolsbackend.dto.baseentity.SimpleBaseEntityLevelRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.mapper.BaseEntityLevelMapper;
-import at.htlkaindorf.clashtoolsbackend.pojos.*;
-import at.htlkaindorf.clashtoolsbackend.repositories.*;
-import lombok.RequiredArgsConstructor;
+import at.htlkaindorf.clashtoolsbackend.pojos.Attribute;
+import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
+import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntityLevel;
+import at.htlkaindorf.clashtoolsbackend.repositories.AccountRepository;
+import at.htlkaindorf.clashtoolsbackend.repositories.AttributeRepository;
+import at.htlkaindorf.clashtoolsbackend.repositories.BaseEntityLevelRepository;
+import at.htlkaindorf.clashtoolsbackend.repositories.BaseEntityRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -18,12 +21,10 @@ import java.util.stream.Collectors;
  * Service for managing base entity levels in the system.
  * This service provides methods for creating, retrieving, updating, and deleting base entity levels,
  * which represent specific levels of base entities in the Clash Tools application.
- * It acts as an intermediary between the controller layer and the repository layer,
- * handling business logic and data transformation.
+ * It extends AbstractCrudService to inherit common CRUD operations.
  */
 @Service
-@RequiredArgsConstructor
-public class BaseEntityLevelService {
+public class BaseEntityLevelService extends AbstractCrudService<BaseEntityLevel, BaseEntityLevelResponseDTO, BaseEntityLevelRequestDTO, Long> {
 
     private final BaseEntityLevelRepository baseEntityLevelRepository;
     private final BaseEntityRepository baseEntityRepository;
@@ -31,31 +32,22 @@ public class BaseEntityLevelService {
     private final BaseEntityLevelMapper baseEntityLevelMapper;
     private final AccountRepository accountRepository;
 
-    /**
-     * Retrieves all base entity levels from the database.
-     * This method fetches all base entity levels stored in the system and converts them to DTOs
-     * for use in the presentation layer.
-     *
-     * @return A list of BaseEntityLevelResponseDTO objects representing all base entity levels in the system
-     */
-    public List<BaseEntityLevelResponseDTO> getAllBaseEntityLevels() {
-        List<BaseEntityLevel> baseEntityLevels = baseEntityLevelRepository.findAll();
-        return baseEntityLevelMapper.toResponseDTOList(baseEntityLevels);
+    public BaseEntityLevelService(BaseEntityLevelRepository baseEntityLevelRepository,
+                                 BaseEntityRepository baseEntityRepository,
+                                 AttributeRepository attributeRepository,
+                                 BaseEntityLevelMapper baseEntityLevelMapper,
+                                 AccountRepository accountRepository) {
+        super(baseEntityLevelRepository, baseEntityLevelMapper);
+        this.baseEntityLevelRepository = baseEntityLevelRepository;
+        this.baseEntityRepository = baseEntityRepository;
+        this.attributeRepository = attributeRepository;
+        this.baseEntityLevelMapper = baseEntityLevelMapper;
+        this.accountRepository = accountRepository;
     }
 
-    /**
-     * Retrieves a specific base entity level by its unique identifier.
-     * This method searches for a base entity level with the given ID in the database,
-     * throws an exception if not found, and converts it to a DTO for the presentation layer.
-     *
-     * @param id The unique identifier of the base entity level to retrieve
-     * @return A BaseEntityLevelResponseDTO representing the requested base entity level
-     * @throws IllegalArgumentException If no base entity level with the given ID exists in the database
-     */
-    public BaseEntityLevelResponseDTO getBaseEntityLevelById(Long id) {
-        BaseEntityLevel baseEntityLevel = baseEntityLevelRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Base entity level not found"));
-        return baseEntityLevelMapper.toResponseDTO(baseEntityLevel);
+    @Override
+    protected void setEntityId(BaseEntityLevel entity, Long id) {
+        entity.setId(id);
     }
 
     /**
@@ -72,7 +64,7 @@ public class BaseEntityLevelService {
                 .orElseThrow(() -> new IllegalArgumentException("Base entity not found"));
 
         List<BaseEntityLevel> baseEntityLevels = baseEntityLevelRepository.findByBaseEntityId(baseEntityId);
-        return baseEntityLevelMapper.toResponseDTOList(baseEntityLevels);
+        return baseEntityLevelMapper.toDTOList(baseEntityLevels);
     }
 
     /**
@@ -84,20 +76,20 @@ public class BaseEntityLevelService {
      */
     public List<BaseEntityLevelResponseDTO> getBaseEntityLevelsByLevel(Integer level) {
         List<BaseEntityLevel> baseEntityLevels = baseEntityLevelRepository.findByLevel(level);
-        return baseEntityLevelMapper.toResponseDTOList(baseEntityLevels);
+        return baseEntityLevelMapper.toDTOList(baseEntityLevels);
     }
 
     /**
      * Creates a new base entity level in the database.
-     * This method converts the provided request DTO to an entity object,
-     * persists it to the database, and returns the created entity as a DTO.
+     * This method overrides the default implementation to add validation and handle relationships.
      *
      * @param requestDTO The BaseEntityLevelRequestDTO containing the data for the new base entity level
      * @return A BaseEntityLevelResponseDTO representing the newly created base entity level
      * @throws IllegalArgumentException If the base entity with the given ID does not exist
      * @throws IllegalArgumentException If any of the attributes with the given IDs do not exist
      */
-    public BaseEntityLevelResponseDTO createBaseEntityLevel(BaseEntityLevelRequestDTO requestDTO) {
+    @Override
+    public BaseEntityLevelResponseDTO create(BaseEntityLevelRequestDTO requestDTO) {
         // Verify that the base entity exists
         BaseEntity baseEntity = baseEntityRepository.findById(requestDTO.getBaseEntityId())
                 .orElseThrow(() -> new IllegalArgumentException("Base entity not found"));
@@ -127,14 +119,12 @@ public class BaseEntityLevelService {
         baseEntityLevel.setImgPath(requestDTO.getImgPath());
 
         BaseEntityLevel savedBaseEntityLevel = baseEntityLevelRepository.save(baseEntityLevel);
-        return baseEntityLevelMapper.toResponseDTO(savedBaseEntityLevel);
+        return baseEntityLevelMapper.toDTO(savedBaseEntityLevel);
     }
 
     /**
      * Updates an existing base entity level in the database.
-     * This method retrieves the base entity level with the given ID, updates its properties
-     * with the values from the request DTO, persists the changes to the database,
-     * and returns the updated entity as a DTO.
+     * This method overrides the default implementation to add validation and handle relationships.
      *
      * @param id The unique identifier of the base entity level to update
      * @param requestDTO The BaseEntityLevelRequestDTO containing the updated data
@@ -143,7 +133,8 @@ public class BaseEntityLevelService {
      * @throws IllegalArgumentException If the base entity with the given ID does not exist
      * @throws IllegalArgumentException If any of the attributes with the given IDs do not exist
      */
-    public BaseEntityLevelResponseDTO updateBaseEntityLevel(Long id, BaseEntityLevelRequestDTO requestDTO) {
+    @Override
+    public BaseEntityLevelResponseDTO update(Long id, BaseEntityLevelRequestDTO requestDTO) {
         BaseEntityLevel baseEntityLevel = baseEntityLevelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Base entity level not found"));
 
@@ -179,18 +170,7 @@ public class BaseEntityLevelService {
         baseEntityLevel.setImgPath(requestDTO.getImgPath());
 
         BaseEntityLevel updatedBaseEntityLevel = baseEntityLevelRepository.save(baseEntityLevel);
-        return baseEntityLevelMapper.toResponseDTO(updatedBaseEntityLevel);
-    }
-
-    /**
-     * Deletes a base entity level from the database.
-     * This method removes the base entity level with the given ID from the database.
-     * If no entity with the given ID exists, the operation completes silently.
-     *
-     * @param id The unique identifier of the base entity level to delete
-     */
-    public void deleteBaseEntityLevel(Long id) {
-        baseEntityLevelRepository.deleteById(id);
+        return baseEntityLevelMapper.toDTO(updatedBaseEntityLevel);
     }
 
     /**

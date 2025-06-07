@@ -31,7 +31,7 @@ public class BaseEntityLevelController {
      */
     @GetMapping
     public ResponseEntity<List<BaseEntityLevelResponseDTO>> getAllBaseEntityLevels() {
-        List<BaseEntityLevelResponseDTO> baseEntityLevels = baseEntityLevelService.getAllBaseEntityLevels();
+        List<BaseEntityLevelResponseDTO> baseEntityLevels = baseEntityLevelService.getAll();
         return ResponseEntity.ok(baseEntityLevels);
     }
 
@@ -46,7 +46,7 @@ public class BaseEntityLevelController {
     @GetMapping("/{id}")
     public ResponseEntity<BaseEntityLevelResponseDTO> getBaseEntityLevelById(
             @PathVariable Long id) {
-        BaseEntityLevelResponseDTO baseEntityLevel = baseEntityLevelService.getBaseEntityLevelById(id);
+        BaseEntityLevelResponseDTO baseEntityLevel = baseEntityLevelService.getById(id);
         return ResponseEntity.ok(baseEntityLevel);
     }
 
@@ -81,7 +81,7 @@ public class BaseEntityLevelController {
     @PostMapping
     public ResponseEntity<BaseEntityLevelResponseDTO> createBaseEntityLevel(
             @Valid @RequestBody BaseEntityLevelRequestDTO requestDTO) {
-        BaseEntityLevelResponseDTO baseEntityLevel = baseEntityLevelService.createBaseEntityLevel(requestDTO);
+        BaseEntityLevelResponseDTO baseEntityLevel = baseEntityLevelService.create(requestDTO);
         return ResponseEntity.ok(baseEntityLevel);
     }
 
@@ -102,7 +102,7 @@ public class BaseEntityLevelController {
     public ResponseEntity<BaseEntityLevelResponseDTO> updateBaseEntityLevel(
             @PathVariable Long id,
             @Valid @RequestBody BaseEntityLevelRequestDTO requestDTO) {
-        BaseEntityLevelResponseDTO baseEntityLevel = baseEntityLevelService.updateBaseEntityLevel(id, requestDTO);
+        BaseEntityLevelResponseDTO baseEntityLevel = baseEntityLevelService.update(id, requestDTO);
         return ResponseEntity.ok(baseEntityLevel);
     }
 
@@ -117,7 +117,7 @@ public class BaseEntityLevelController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBaseEntityLevel(
             @PathVariable Long id) {
-        baseEntityLevelService.deleteBaseEntityLevel(id);
+        baseEntityLevelService.delete(id);
         return ResponseEntity.noContent().build();
     }
 

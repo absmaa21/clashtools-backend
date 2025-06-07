@@ -17,33 +17,45 @@ public class UserService {
     private final UserRepository userRepository;
 
     /**
-     * Find a user by their username
+     * Finds a user by username
      *
-     * @param username the username to search for
-     * @return an Optional containing the user if found, or empty otherwise
+     * @param username Username to search for
+     * @return Optional containing the user if found
+     * @throws IllegalArgumentException if username is null
      */
     public Optional<User> findUserByUsername(String username) {
+        if (username == null) {
+            throw new IllegalArgumentException("Username cannot be null");
+        }
         return userRepository.findByUsername(username);
     }
 
     /**
-     * Find a user by their email address
+     * Finds a user by email address
      *
-     * @param mail the email address to search for
-     * @return an Optional containing the user if found, or empty otherwise
+     * @param mail Email address to search for
+     * @return Optional containing the user if found
+     * @throws IllegalArgumentException if email is null
      */
     public Optional<User> findUserByMail(String mail) {
+        if (mail == null) {
+            throw new IllegalArgumentException("Email cannot be null");
+        }
         return userRepository.findByMail(mail);
     }
 
     /**
-     * Save a user to the database
+     * Saves a user to the database
      *
-     * @param user the user to save
-     * @return the saved user with any generated IDs
+     * @param user User to save
+     * @return Saved user with generated ID
+     * @throws IllegalArgumentException if user is null
      */
     @Transactional
     public User saveUser(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
         return userRepository.save(user);
     }
 }

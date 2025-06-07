@@ -8,7 +8,6 @@ import at.htlkaindorf.clashtoolsbackend.pojos.AttributeName;
 import at.htlkaindorf.clashtoolsbackend.repositories.AttributeNameRepository;
 import at.htlkaindorf.clashtoolsbackend.repositories.AttributeRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,55 +16,38 @@ import java.util.List;
  * Service for managing attributes in the system.
  * This service provides methods for creating, retrieving, updating, and deleting attributes,
  * which represent characteristics of base entities in the Clash Tools application.
- * It acts as an intermediary between the controller layer and the repository layer,
- * handling business logic and data transformation.
+ * It extends AbstractCrudService to inherit common CRUD operations.
  */
 @Service
-@RequiredArgsConstructor
 @Tag(name = "AttributeService", description = "Service for managing attributes")
-public class AttributeService {
+public class AttributeService extends AbstractCrudService<Attribute, AttributeResponseDTO, AttributeRequestDTO, Long> {
 
     private final AttributeRepository attributeRepository;
     private final AttributeNameRepository attributeNameRepository;
     private final AttributeMapper attributeMapper;
 
-    /**
-     * Retrieves all attributes from the database.
-     * This method fetches all attributes stored in the system and converts them to DTOs
-     * for use in the presentation layer.
-     *
-     * @return A list of AttributeResponseDTO objects representing all attributes in the system
-     */
-    public List<AttributeResponseDTO> getAllAttributes() {
-        List<Attribute> attributes = attributeRepository.findAll();
-        return attributeMapper.toDTOList(attributes);
+    public AttributeService(AttributeRepository attributeRepository, AttributeNameRepository attributeNameRepository, AttributeMapper attributeMapper) {
+        super(attributeRepository, attributeMapper);
+        this.attributeRepository = attributeRepository;
+        this.attributeNameRepository = attributeNameRepository;
+        this.attributeMapper = attributeMapper;
     }
 
-    /**
-     * Retrieves a specific attribute by its unique identifier.
-     * This method searches for an attribute with the given ID in the database,
-     * throws an exception if not found, and converts it to a DTO for the presentation layer.
-     *
-     * @param id The unique identifier of the attribute to retrieve
-     * @return An AttributeResponseDTO representing the requested attribute
-     * @throws IllegalArgumentException If no attribute with the given ID exists in the database
-     */
-    public AttributeResponseDTO getAttributeById(Long id) {
-        Attribute attribute = attributeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Attribute not found"));
-        return attributeMapper.toDTO(attribute);
+    @Override
+    protected void setEntityId(Attribute entity, Long id) {
+        entity.setId(id);
     }
 
     /**
      * Creates a new attribute in the database.
-     * This method converts the provided request DTO to an entity object,
-     * persists it to the database, and returns the created entity as a DTO.
+     * This method overrides the default implementation to handle the relationship with AttributeName.
      *
      * @param request The AttributeRequestDTO containing the data for the new attribute
      * @return An AttributeResponseDTO representing the newly created attribute
      * @throws IllegalArgumentException If the attribute name with the given ID does not exist
      */
-    public AttributeResponseDTO createAttribute(AttributeRequestDTO request) {
+    @Override
+    public AttributeResponseDTO create(AttributeRequestDTO request) {
         AttributeName attributeName = attributeNameRepository.findById(request.getAttributeNameId())
                 .orElseThrow(() -> new IllegalArgumentException("AttributeName not found"));
 
@@ -78,9 +60,8 @@ public class AttributeService {
 
     /**
      * Updates an existing attribute in the database.
-     * This method retrieves the attribute with the given ID, updates its properties
-     * with the values from the request DTO, persists the changes to the database,
-     * and returns the updated entity as a DTO.
+     * This method overrides the default implementation to handle the relationship with AttributeName
+     * and manage translations.
      *
      * @param id The unique identifier of the attribute to update
      * @param request The AttributeRequestDTO containing the updated data
@@ -88,7 +69,8 @@ public class AttributeService {
      * @throws IllegalArgumentException If no attribute with the given ID exists in the database
      * @throws IllegalArgumentException If the attribute name with the given ID does not exist
      */
-    public AttributeResponseDTO updateAttribute(Long id, AttributeRequestDTO request) {
+    @Override
+    public AttributeResponseDTO update(Long id, AttributeRequestDTO request) {
         Attribute attribute = attributeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Attribute not found"));
 
@@ -112,17 +94,6 @@ public class AttributeService {
 
         Attribute updatedAttribute = attributeRepository.save(attribute);
         return attributeMapper.toDTO(updatedAttribute);
-    }
-
-    /**
-     * Deletes an attribute from the database.
-     * This method removes the attribute with the given ID from the database.
-     * If no entity with the given ID exists, the operation completes silently.
-     *
-     * @param id The unique identifier of the attribute to delete
-     */
-    public void deleteAttribute(Long id) {
-        attributeRepository.deleteById(id);
     }
 
     /**

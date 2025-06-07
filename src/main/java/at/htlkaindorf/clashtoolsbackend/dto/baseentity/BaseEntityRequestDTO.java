@@ -3,15 +3,28 @@ package at.htlkaindorf.clashtoolsbackend.dto.baseentity;
 import at.htlkaindorf.clashtoolsbackend.pojos.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 
-@Data
-public class BaseEntityRequestDTO {
+/**
+ * Record for creating or updating a base entity.
+ * This record contains the information needed to create or update a base entity.
+ *
+ * @param name The name of the base entity (required)
+ * @param level The level of the base entity
+ * @param category The category of the base entity (required)
+ */
+public record BaseEntityRequestDTO(
     @NotBlank
-    private String name;
+    String name,
 
-    private Integer level;
+    Integer level,
 
     @NotNull(message = "Category is required")
-    private Category category;
+    Category category
+) {
+    /**
+     * Default constructor for deserialization.
+     */
+    public BaseEntityRequestDTO() {
+        this(null, null, null);
+    }
 }

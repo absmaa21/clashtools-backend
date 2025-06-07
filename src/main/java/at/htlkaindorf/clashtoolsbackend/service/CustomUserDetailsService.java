@@ -11,16 +11,27 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
+/**
+ * Service that loads user-specific data for Spring Security.
+ * Implements UserDetailsService to provide user authentication information.
+ */
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Loads a user by username for authentication.
+     *
+     * @param username Username to search for
+     * @return UserDetails object for Spring Security
+     * @throws UsernameNotFoundException if user not found
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
