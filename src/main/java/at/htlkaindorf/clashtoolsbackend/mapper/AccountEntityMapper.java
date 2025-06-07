@@ -22,6 +22,7 @@ public interface AccountEntityMapper extends EntityMapper<AccountEntity, Account
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "entity", target = "baseEntity")
     @Mapping(source = "level", target = "currentLevel")
+    @Mapping(target = "account", ignore = true)
     @Override
     AccountEntity toEntity(AccountEntityDTO accountEntityDTO);
 

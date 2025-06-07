@@ -6,7 +6,6 @@ import at.htlkaindorf.clashtoolsbackend.mapper.BaseEntityLevelMapper;
 import at.htlkaindorf.clashtoolsbackend.pojos.Attribute;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntityLevel;
-import at.htlkaindorf.clashtoolsbackend.repositories.AccountRepository;
 import at.htlkaindorf.clashtoolsbackend.repositories.AttributeRepository;
 import at.htlkaindorf.clashtoolsbackend.repositories.BaseEntityLevelRepository;
 import at.htlkaindorf.clashtoolsbackend.repositories.BaseEntityRepository;
@@ -30,19 +29,15 @@ public class BaseEntityLevelService extends AbstractCrudService<BaseEntityLevel,
     private final BaseEntityRepository baseEntityRepository;
     private final AttributeRepository attributeRepository;
     private final BaseEntityLevelMapper baseEntityLevelMapper;
-    private final AccountRepository accountRepository;
-
     public BaseEntityLevelService(BaseEntityLevelRepository baseEntityLevelRepository,
                                  BaseEntityRepository baseEntityRepository,
                                  AttributeRepository attributeRepository,
-                                 BaseEntityLevelMapper baseEntityLevelMapper,
-                                 AccountRepository accountRepository) {
+                                 BaseEntityLevelMapper baseEntityLevelMapper) {
         super(baseEntityLevelRepository, baseEntityLevelMapper);
         this.baseEntityLevelRepository = baseEntityLevelRepository;
         this.baseEntityRepository = baseEntityRepository;
         this.attributeRepository = attributeRepository;
         this.baseEntityLevelMapper = baseEntityLevelMapper;
-        this.accountRepository = accountRepository;
     }
 
     @Override
@@ -67,17 +62,6 @@ public class BaseEntityLevelService extends AbstractCrudService<BaseEntityLevel,
         return baseEntityLevelMapper.toDTOList(baseEntityLevels);
     }
 
-    /**
-     * Retrieves all base entity levels associated with a specific level value.
-     * This method fetches all base entity levels with the given level value and converts them to DTOs.
-     *
-     * @param level The level value to filter by
-     * @return A list of BaseEntityLevelResponseDTO objects representing base entity levels with the specified level
-     */
-    public List<BaseEntityLevelResponseDTO> getBaseEntityLevelsByLevel(Integer level) {
-        List<BaseEntityLevel> baseEntityLevels = baseEntityLevelRepository.findByLevel(level);
-        return baseEntityLevelMapper.toDTOList(baseEntityLevels);
-    }
 
     /**
      * Creates a new base entity level in the database.
@@ -186,13 +170,4 @@ public class BaseEntityLevelService extends AbstractCrudService<BaseEntityLevel,
         baseEntityLevelRepository.deleteByBaseEntity(baseEntity);
     }
 
-    /**
-     * Deletes all base entity levels associated with a specific level value.
-     * This method removes all base entity levels with the given level value from the database.
-     *
-     * @param level The level value whose base entity levels should be deleted
-     */
-    public void deleteBaseEntityLevelsByLevel(Integer level) {
-        baseEntityLevelRepository.deleteByLevel(level);
-    }
 }

@@ -7,10 +7,9 @@ import at.htlkaindorf.clashtoolsbackend.pojos.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +84,7 @@ public class JwtService {
         } catch (ExpiredJwtException ex) {
             logger.warn("JWT token expired: {}", ex.getMessage());
             throw new JwtExpiredException("JWT token has expired", ex);
-        } catch (SignatureException | MalformedJwtException | UnsupportedJwtException ex) {
+        } catch (io.jsonwebtoken.security.SignatureException | MalformedJwtException | UnsupportedJwtException ex) {
             logger.warn("Invalid JWT token: {}", ex.getMessage());
             throw new InvalidJwtException("Invalid JWT token: " + ex.getMessage(), ex);
         } catch (Exception ex) {
@@ -111,7 +110,7 @@ public class JwtService {
         } catch (ExpiredJwtException ex) {
             logger.warn("JWT token expired: {}", ex.getMessage());
             return false;
-        } catch (SignatureException ex) {
+        } catch (io.jsonwebtoken.security.SignatureException ex) {
             logger.warn("Invalid JWT signature: {}", ex.getMessage());
             return false;
         } catch (MalformedJwtException ex) {

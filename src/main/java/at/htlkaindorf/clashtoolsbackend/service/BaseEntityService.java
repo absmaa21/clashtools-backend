@@ -102,7 +102,7 @@ public class BaseEntityService extends AbstractCrudService<BaseEntity, BaseEntit
      * Retrieves base entity summaries for all entities.
      * This method uses a projection to efficiently fetch only the necessary data
      * without loading the entire entity and its relationships.
-     * It's useful for list views and search results where only basic information is needed.
+     * It’s useful for list views and search results where only basic information is needed.
      *
      * @return A list of BaseEntitySummary projections with basic entity information
      */
@@ -114,7 +114,7 @@ public class BaseEntityService extends AbstractCrudService<BaseEntity, BaseEntit
      * Retrieves base entity summaries for entities with the specified category.
      * This method uses a projection to efficiently fetch only the necessary data
      * without loading the entire entity and its relationships.
-     * It's useful for list views and search results where only basic information is needed.
+     * It’s useful for list views and search results where only basic information is needed.
      *
      * @param category The category to filter by
      * @return A list of BaseEntitySummary projections with basic entity information

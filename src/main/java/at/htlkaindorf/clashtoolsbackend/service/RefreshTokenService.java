@@ -12,7 +12,7 @@ import java.util.UUID;
 
 /**
  * Service for managing refresh tokens used in the authentication process.
- * Refresh tokens allow users to obtain new JWT tokens without re-authentication.
+ * Refresh tokens allow users to get new JWT tokens without re-authentication.
  */
 @Service
 @RequiredArgsConstructor

@@ -1,5 +1,6 @@
 package at.htlkaindorf.clashtoolsbackend.controller;
 
+import at.htlkaindorf.clashtoolsbackend.dto.ApiResponse;
 import at.htlkaindorf.clashtoolsbackend.dto.attribute.AttributeValueDTO;
 import at.htlkaindorf.clashtoolsbackend.service.AttributeValueService;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +29,9 @@ public class AttributeValueController {
      * @return ResponseEntity containing a list of AttributeValueDTO objects
      */
     @GetMapping
-    public ResponseEntity<List<AttributeValueDTO>> getAllAttributeValues() {
+    public ResponseEntity<ApiResponse<List<AttributeValueDTO>>> getAllAttributeValues() {
         List<AttributeValueDTO> attributeValues = attributeValueService.getAllAttributeValues();
-        return ResponseEntity.ok(attributeValues);
+        return ResponseEntity.ok(ApiResponse.success(attributeValues));
     }
 
     /**
@@ -42,10 +43,10 @@ public class AttributeValueController {
      * @throws IllegalArgumentException if no attribute value with the given ID exists
      */
     @GetMapping("/{id}")
-    public ResponseEntity<AttributeValueDTO> getAttributeValueById(
+    public ResponseEntity<ApiResponse<AttributeValueDTO>> getAttributeValueById(
             @PathVariable Long id) {
         AttributeValueDTO attributeValue = attributeValueService.getAttributeValueById(id);
-        return ResponseEntity.ok(attributeValue);
+        return ResponseEntity.ok(ApiResponse.success(attributeValue));
     }
 
     /**
@@ -57,10 +58,10 @@ public class AttributeValueController {
      * @throws IllegalArgumentException if no attribute with the given ID exists
      */
     @GetMapping("/attribute/{attributeId}")
-    public ResponseEntity<List<AttributeValueDTO>> getAttributeValuesByAttributeId(
+    public ResponseEntity<ApiResponse<List<AttributeValueDTO>>> getAttributeValuesByAttributeId(
             @PathVariable Long attributeId) {
         List<AttributeValueDTO> attributeValues = attributeValueService.getAttributeValuesByAttributeId(attributeId);
-        return ResponseEntity.ok(attributeValues);
+        return ResponseEntity.ok(ApiResponse.success(attributeValues));
     }
 
     /**
@@ -72,10 +73,10 @@ public class AttributeValueController {
      * @throws IllegalArgumentException if no base entity level with the given ID exists
      */
     @GetMapping("/base-entity-level/{baseEntityLevelId}")
-    public ResponseEntity<List<AttributeValueDTO>> getAttributeValuesByBaseEntityLevelId(
+    public ResponseEntity<ApiResponse<List<AttributeValueDTO>>> getAttributeValuesByBaseEntityLevelId(
             @PathVariable Long baseEntityLevelId) {
         List<AttributeValueDTO> attributeValues = attributeValueService.getAttributeValuesByBaseEntityLevelId(baseEntityLevelId);
-        return ResponseEntity.ok(attributeValues);
+        return ResponseEntity.ok(ApiResponse.success(attributeValues));
     }
 
     /**
@@ -87,10 +88,10 @@ public class AttributeValueController {
      * @return ResponseEntity with no content, indicating successful deletion
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAttributeValue(
+    public ResponseEntity<ApiResponse<Void>> deleteAttributeValue(
             @PathVariable Long id) {
         attributeValueService.deleteAttributeValue(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "Attribute value deleted successfully"));
     }
 
     /**
@@ -102,10 +103,10 @@ public class AttributeValueController {
      * @throws IllegalArgumentException if no attribute with the given ID exists
      */
     @DeleteMapping("/attribute/{attributeId}")
-    public ResponseEntity<Void> deleteAttributeValuesByAttributeId(
+    public ResponseEntity<ApiResponse<Void>> deleteAttributeValuesByAttributeId(
             @PathVariable Long attributeId) {
         attributeValueService.deleteAttributeValuesByAttributeId(attributeId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "Attribute values deleted successfully"));
     }
 
     /**
@@ -117,9 +118,9 @@ public class AttributeValueController {
      * @throws IllegalArgumentException if no base entity level with the given ID exists
      */
     @DeleteMapping("/base-entity-level/{baseEntityLevelId}")
-    public ResponseEntity<Void> deleteAttributeValuesByBaseEntityLevelId(
+    public ResponseEntity<ApiResponse<Void>> deleteAttributeValuesByBaseEntityLevelId(
             @PathVariable Long baseEntityLevelId) {
         attributeValueService.deleteAttributeValuesByBaseEntityLevelId(baseEntityLevelId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "Attribute values for base entity level deleted successfully"));
     }
 }

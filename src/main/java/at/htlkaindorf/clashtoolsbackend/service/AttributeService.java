@@ -107,4 +107,62 @@ public class AttributeService extends AbstractCrudService<Attribute, AttributeRe
         List<Attribute> attributes = attributeRepository.findByAttributeNameId(attributeNameId);
         return attributeMapper.toDTOList(attributes);
     }
+
+    /**
+     * Retrieves all attributes from the database.
+     * This method delegates to the getAll() method from the parent class.
+     *
+     * @return A list of AttributeResponseDTO objects representing all attributes in the database
+     */
+    public List<AttributeResponseDTO> getAllAttributes() {
+        return getAll();
+    }
+
+    /**
+     * Retrieves a specific attribute by its unique identifier.
+     * This method searches for an attribute with the given ID in the database,
+     * throws an exception if not found, and converts it to a DTO.
+     *
+     * @param id The unique identifier of the attribute to retrieve
+     * @return An AttributeResponseDTO representing the requested attribute
+     * @throws IllegalArgumentException If no attribute with the given ID exists in the database
+     */
+    public AttributeResponseDTO getAttributeById(Long id) {
+        return attributeMapper.toDTO(attributeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Attribute not found")));
+    }
+
+    /**
+     * Creates a new attribute in the database.
+     * This method delegates to the create() method from the parent class.
+     *
+     * @param request The AttributeRequestDTO containing the data for the new attribute
+     * @return An AttributeResponseDTO representing the newly created attribute
+     */
+    public AttributeResponseDTO createAttribute(AttributeRequestDTO request) {
+        return create(request);
+    }
+
+    /**
+     * Updates an existing attribute in the database.
+     * This method delegates to the update() method from the parent class.
+     *
+     * @param id The unique identifier of the attribute to update
+     * @param request The AttributeRequestDTO containing the updated data
+     * @return An AttributeResponseDTO representing the updated attribute
+     * @throws IllegalArgumentException If no attribute with the given ID exists in the database
+     */
+    public AttributeResponseDTO updateAttribute(Long id, AttributeRequestDTO request) {
+        return update(id, request);
+    }
+
+    /**
+     * Deletes an attribute from the database.
+     * This method delegates to the delete() method from the parent class.
+     *
+     * @param id The unique identifier of the attribute to delete
+     */
+    public void deleteAttribute(Long id) {
+        delete(id);
+    }
 }

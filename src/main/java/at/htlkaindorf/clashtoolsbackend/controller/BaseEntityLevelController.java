@@ -1,5 +1,6 @@
 package at.htlkaindorf.clashtoolsbackend.controller;
 
+import at.htlkaindorf.clashtoolsbackend.dto.ApiResponse;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityLevelResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.service.BaseEntityLevelService;

@@ -44,9 +44,9 @@ public class BaseEntityController extends CrudController<BaseEntity, BaseEntityD
      * @return List of base entities with levels
      */
     @GetMapping("/with-levels")
-    public ResponseEntity<List<BaseEntityResponseDTO>> getAllBaseEntities() {
+    public ResponseEntity<ApiResponse<List<BaseEntityResponseDTO>>> getAllBaseEntities() {
         List<BaseEntityResponseDTO> baseEntities = baseEntityService.getAllBaseEntitiesWithLevels();
-        return ResponseEntity.ok(baseEntities);
+        return ResponseEntity.ok(ApiResponse.success(baseEntities));
     }
 
     /**
@@ -57,10 +57,10 @@ public class BaseEntityController extends CrudController<BaseEntity, BaseEntityD
      * @throws IllegalArgumentException if entity not found
      */
     @GetMapping("/with-levels/{id}")
-    public ResponseEntity<BaseEntityResponseDTO> getBaseEntityById(
+    public ResponseEntity<ApiResponse<BaseEntityResponseDTO>> getBaseEntityById(
             @PathVariable Long id) {
         BaseEntityResponseDTO baseEntity = baseEntityService.getBaseEntityByIdWithLevels(id);
-        return ResponseEntity.ok(baseEntity);
+        return ResponseEntity.ok(ApiResponse.success(baseEntity));
     }
 
 
@@ -71,10 +71,10 @@ public class BaseEntityController extends CrudController<BaseEntity, BaseEntityD
      * @return List of base entities in the specified category
      */
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<BaseEntityDTO>> getBaseEntitiesByCategory(
+    public ResponseEntity<ApiResponse<List<BaseEntityDTO>>> getBaseEntitiesByCategory(
             @PathVariable Category category) {
         List<BaseEntityDTO> baseEntities = baseEntityService.getBaseEntitiesByCategory(category);
-        return ResponseEntity.ok(baseEntities);
+        return ResponseEntity.ok(ApiResponse.success(baseEntities));
     }
 
     /**
@@ -84,10 +84,10 @@ public class BaseEntityController extends CrudController<BaseEntity, BaseEntityD
      * @return List of base entities matching the search term
      */
     @GetMapping("/search")
-    public ResponseEntity<List<BaseEntityDTO>> searchBaseEntitiesByName(
+    public ResponseEntity<ApiResponse<List<BaseEntityDTO>>> searchBaseEntitiesByName(
             @RequestParam String name) {
         List<BaseEntityDTO> baseEntities = baseEntityService.getBaseEntitiesByNameContaining(name);
-        return ResponseEntity.ok(baseEntities);
+        return ResponseEntity.ok(ApiResponse.success(baseEntities));
     }
 
     /**

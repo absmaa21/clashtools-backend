@@ -17,6 +17,7 @@ public interface AccountMapper extends EntityMapper<Account, AccountResponseDTO,
 
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.username", target = "username")
+    @Mapping(target = "baseEntityIds", ignore = true)
     AccountResponseDTO toDTO(Account account);
 
     @Mapping(target = "id", ignore = true)

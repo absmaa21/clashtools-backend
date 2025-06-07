@@ -1036,3 +1036,51 @@ components:
         - accountId
         - baseEntityId
         - currentLevel
+
+    ErrorResponse:
+      type: object
+      description: Standard error response structure
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Time when the error occurred
+          example: "2023-07-01T12:34:56.789Z"
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        error:
+          type: string
+          description: Error type
+          example: "Bad Request"
+        message:
+          type: string
+          description: Error message
+          example: "Validation failed"
+        path:
+          type: string
+          description: Request path that caused the error
+          example: "/api/accounts"
+        fieldErrors:
+          type: object
+          additionalProperties:
+            type: string
+          description: Map of field-specific validation errors
+          example: {"username": "Username already taken", "email": "Invalid email format"}
+
+    ApiResponse:
+      type: object
+      description: Standard response wrapper for API responses
+      properties:
+        data:
+          type: object
+          description: Response data (can be any type)
+        message:
+          type: string
+          description: Response message
+          example: "Success"
+        success:
+          type: boolean
+          description: Whether the operation was successful
+          example: true

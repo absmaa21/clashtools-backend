@@ -1,5 +1,6 @@
 package at.htlkaindorf.clashtoolsbackend.controller;
 
+import at.htlkaindorf.clashtoolsbackend.dto.ApiResponse;
 import at.htlkaindorf.clashtoolsbackend.dto.auth.AuthRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.auth.AuthResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.RefreshTokenRequestDTO;
@@ -47,13 +48,13 @@ public class AuthController {
      * @throws IllegalArgumentException if the user is not found
      */
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(
+    public ResponseEntity<ApiResponse<Void>> logout(
             @AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         authService.logout(user);
-        return ResponseEntity.ok("Logged out successfully");
+        return ResponseEntity.ok(ApiResponse.success(null, "Logged out successfully"));
     }
 
     /**
@@ -66,7 +67,7 @@ public class AuthController {
      * @throws IllegalArgumentException if the refresh token is invalid or expired
      */
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponseDTO> refreshToken(
+    public ResponseEntity<ApiResponse<AuthResponseDTO>> refreshToken(
             @RequestBody RefreshTokenRequestDTO request,
             HttpServletResponse httpServletResponse) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(request.getRefreshToken())
@@ -86,7 +87,8 @@ public class AuthController {
         accessTokenCookie.setMaxAge(3600); // 1 hour
         httpServletResponse.addCookie(accessTokenCookie);
 
-        return ResponseEntity.ok(new AuthResponseDTO(newJwt, request.getRefreshToken()));
+        AuthResponseDTO authResponse = new AuthResponseDTO(newJwt, request.getRefreshToken());
+        return ResponseEntity.ok(ApiResponse.success(authResponse, "Token refreshed successfully"));
     }
 
     /**
@@ -100,10 +102,10 @@ public class AuthController {
      * @throws at.htlkaindorf.clashtoolsbackend.exceptions.EmailAlreadyExistsException if the email is already in use
      */
     @PostMapping("/register")
-    public ResponseEntity<String> register(
+    public ResponseEntity<ApiResponse<Void>> register(
             @Valid @RequestBody RegisterRequestDTO request) {
         authService.register(request);
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok(ApiResponse.success(null, "User registered successfully"));
     }
 
     /**
@@ -117,7 +119,7 @@ public class AuthController {
      * @throws org.springframework.security.authentication.BadCredentialsException if credentials are invalid
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(
+    public ResponseEntity<ApiResponse<AuthResponseDTO>> login(
             @Valid @RequestBody AuthRequestDTO request,
             HttpServletResponse httpServletResponse) {
         AuthResponseDTO response = authService.login(request);
@@ -129,6 +131,6 @@ public class AuthController {
         accessTokenCookie.setMaxAge(3600); // 1 hour
         httpServletResponse.addCookie(accessTokenCookie);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response, "Login successful"));
     }
 }

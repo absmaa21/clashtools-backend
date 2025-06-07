@@ -1,5 +1,6 @@
 package at.htlkaindorf.clashtoolsbackend.controller;
 
+import at.htlkaindorf.clashtoolsbackend.dto.ApiResponse;
 import at.htlkaindorf.clashtoolsbackend.dto.account.AccountEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.account.AccountEntityRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.service.AccountEntityService;
@@ -32,11 +33,11 @@ public class AccountEntityController {
      */
     @GetMapping("/account/{accountId}")
     @Operation(summary = "Get all account entities for a specific account")
-    public ResponseEntity<List<AccountEntityDTO>> getAccEntitiesByAccountId(
+    public ResponseEntity<ApiResponse<List<AccountEntityDTO>>> getAccEntitiesByAccountId(
             @PathVariable Long accountId
     ) {
         List<AccountEntityDTO> accountEntityDTOS = accountEntityService.getAllAccEntities(accountId);
-        return ResponseEntity.ok(accountEntityDTOS);
+        return ResponseEntity.ok(ApiResponse.success(accountEntityDTOS));
     }
 
     /**
@@ -47,11 +48,11 @@ public class AccountEntityController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "Get a specific account entity by ID")
-    public ResponseEntity<AccountEntityDTO> getAccountEntityById(
+    public ResponseEntity<ApiResponse<AccountEntityDTO>> getAccountEntityById(
             @PathVariable Long id
     ) {
         AccountEntityDTO accountEntityDTO = accountEntityService.getAccountEntityById(id);
-        return ResponseEntity.ok(accountEntityDTO);
+        return ResponseEntity.ok(ApiResponse.success(accountEntityDTO));
     }
 
     /**
@@ -62,11 +63,11 @@ public class AccountEntityController {
      */
     @PostMapping
     @Operation(summary = "Create a new account entity")
-    public ResponseEntity<AccountEntityDTO> createAccountEntity(
+    public ResponseEntity<ApiResponse<AccountEntityDTO>> createAccountEntity(
             @Valid @RequestBody AccountEntityRequestDTO request
     ) {
         AccountEntityDTO accountEntityDTO = accountEntityService.createAccountEntity(request);
-        return ResponseEntity.ok(accountEntityDTO);
+        return ResponseEntity.ok(ApiResponse.success(accountEntityDTO, "Account entity created successfully"));
     }
 
     /**
@@ -78,12 +79,12 @@ public class AccountEntityController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing account entity")
-    public ResponseEntity<AccountEntityDTO> updateAccountEntity(
+    public ResponseEntity<ApiResponse<AccountEntityDTO>> updateAccountEntity(
             @PathVariable Long id,
             @Valid @RequestBody AccountEntityRequestDTO request
     ) {
         AccountEntityDTO accountEntityDTO = accountEntityService.updateAccountEntity(id, request);
-        return ResponseEntity.ok(accountEntityDTO);
+        return ResponseEntity.ok(ApiResponse.success(accountEntityDTO, "Account entity updated successfully"));
     }
 
     /**
@@ -95,12 +96,12 @@ public class AccountEntityController {
      */
     @PatchMapping("/{id}/upgrade-start")
     @Operation(summary = "Update the upgrade start time for an account entity")
-    public ResponseEntity<AccountEntityDTO> updateUpgradeStart(
+    public ResponseEntity<ApiResponse<AccountEntityDTO>> updateUpgradeStart(
             @PathVariable Long id,
             @RequestParam Integer upgradeStart
     ) {
         AccountEntityDTO accountEntityDTO = accountEntityService.updateUpgradeStart(id, upgradeStart);
-        return ResponseEntity.ok(accountEntityDTO);
+        return ResponseEntity.ok(ApiResponse.success(accountEntityDTO, "Upgrade start time updated successfully"));
     }
 
     /**
@@ -111,10 +112,10 @@ public class AccountEntityController {
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete an account entity")
-    public ResponseEntity<Void> deleteAccountEntity(
+    public ResponseEntity<ApiResponse<Void>> deleteAccountEntity(
             @PathVariable Long id
     ) {
         accountEntityService.deleteAccountEntity(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "Account entity deleted successfully"));
     }
 }

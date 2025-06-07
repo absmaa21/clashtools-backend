@@ -16,14 +16,18 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {SimplifiedBaseEntityLevelMapper.class})
 public interface BaseEntityMapper extends EntityMapper<BaseEntity, BaseEntityDTO, BaseEntityRequestDTO> {
     @org.mapstruct.Mapping(target = "categoryId", expression = "java(mapCategoryToInteger(baseEntity.getCategory()))")
+    @org.mapstruct.Mapping(target = "level", ignore = true)
     BaseEntityDTO toDTO(BaseEntity baseEntity);
 
     @org.mapstruct.Mapping(target = "categoryId", expression = "java(mapCategoryToInteger(baseEntity.getCategory()))")
     @org.mapstruct.Mapping(target = "baseEntityLevels", source = "baseEntityLevels")
+    @org.mapstruct.Mapping(target = "level", ignore = true)
     BaseEntityResponseDTO toResponseDTO(BaseEntity baseEntity);
 
     List<BaseEntityResponseDTO> toResponseDTOList(List<BaseEntity> baseEntities);
 
+    @org.mapstruct.Mapping(target = "id", ignore = true)
+    @org.mapstruct.Mapping(target = "baseEntityLevels", ignore = true)
     BaseEntity toEntity(BaseEntityRequestDTO requestDTO);
     List<BaseEntityDTO> toDTOList(List<BaseEntity> baseEntities);
 

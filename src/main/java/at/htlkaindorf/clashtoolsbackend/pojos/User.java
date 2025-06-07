@@ -30,16 +30,16 @@ public class User {
     private Long version;
 
     @Column(nullable = false, unique = true)
-    @Schema(description = "Username for login", example = "johndoe", required = true)
+    @Schema(description = "Username for login", example = "johndoe", requiredMode = Schema.RequiredMode.REQUIRED)
     private String username;
 
     @Column(nullable = false)
-    @Schema(description = "Encrypted password", example = "$2a$10$...", required = true)
+    @Schema(description = "Encrypted password", example = "$2a$10$...", requiredMode = Schema.RequiredMode.REQUIRED)
     private String password;
 
     @Column(nullable = false, unique = true)
     @Email
-    @Schema(description = "Email address of the user", example = "john.doe@example.com", required = true)
+    @Schema(description = "Email address of the user", example = "john.doe@example.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String mail;
 
     @ManyToMany(fetch = FetchType.LAZY)

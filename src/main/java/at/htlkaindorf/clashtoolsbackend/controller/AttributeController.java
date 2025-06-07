@@ -1,5 +1,6 @@
 package at.htlkaindorf.clashtoolsbackend.controller;
 
+import at.htlkaindorf.clashtoolsbackend.dto.ApiResponse;
 import at.htlkaindorf.clashtoolsbackend.dto.attribute.AttributeRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.attribute.AttributeResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.service.AttributeService;
@@ -30,9 +31,9 @@ public class AttributeController {
      * @return ResponseEntity containing a list of AttributeResponseDTO objects
      */
     @GetMapping
-    public ResponseEntity<List<AttributeResponseDTO>> getAllAttributes() {
+    public ResponseEntity<ApiResponse<List<AttributeResponseDTO>>> getAllAttributes() {
         List<AttributeResponseDTO> attributes = attributeService.getAll();
-        return ResponseEntity.ok(attributes);
+        return ResponseEntity.ok(ApiResponse.success(attributes));
     }
 
     /**
@@ -44,10 +45,10 @@ public class AttributeController {
      * @throws IllegalArgumentException if no attribute with the given ID exists
      */
     @GetMapping("/{id}")
-    public ResponseEntity<AttributeResponseDTO> getAttributeById(
+    public ResponseEntity<ApiResponse<AttributeResponseDTO>> getAttributeById(
             @PathVariable Long id) {
         AttributeResponseDTO attribute = attributeService.getById(id);
-        return ResponseEntity.ok(attribute);
+        return ResponseEntity.ok(ApiResponse.success(attribute));
     }
 
     /**
@@ -58,10 +59,10 @@ public class AttributeController {
      * @return ResponseEntity containing a list of AttributeResponseDTO objects
      */
     @GetMapping("/by-attribute-name/{attributeNameId}")
-    public ResponseEntity<List<AttributeResponseDTO>> getAttributesByAttributeNameId(
+    public ResponseEntity<ApiResponse<List<AttributeResponseDTO>>> getAttributesByAttributeNameId(
             @PathVariable Long attributeNameId) {
         List<AttributeResponseDTO> attributes = attributeService.getAttributesByAttributeNameId(attributeNameId);
-        return ResponseEntity.ok(attributes);
+        return ResponseEntity.ok(ApiResponse.success(attributes));
     }
 
     /**
@@ -75,10 +76,10 @@ public class AttributeController {
      * @throws IllegalArgumentException if the attribute name with the given ID does not exist
      */
     @PostMapping
-    public ResponseEntity<AttributeResponseDTO> createAttribute(
+    public ResponseEntity<ApiResponse<AttributeResponseDTO>> createAttribute(
             @Valid @RequestBody AttributeRequestDTO request) {
         AttributeResponseDTO attribute = attributeService.create(request);
-        return ResponseEntity.ok(attribute);
+        return ResponseEntity.ok(ApiResponse.success(attribute, "Attribute created successfully"));
     }
 
     /**
@@ -94,11 +95,11 @@ public class AttributeController {
      * @throws jakarta.validation.ConstraintViolationException if validation fails
      */
     @PutMapping("/{id}")
-    public ResponseEntity<AttributeResponseDTO> updateAttribute(
+    public ResponseEntity<ApiResponse<AttributeResponseDTO>> updateAttribute(
             @PathVariable Long id,
             @Valid @RequestBody AttributeRequestDTO request) {
         AttributeResponseDTO attribute = attributeService.update(id, request);
-        return ResponseEntity.ok(attribute);
+        return ResponseEntity.ok(ApiResponse.success(attribute, "Attribute updated successfully"));
     }
 
     /**
@@ -110,9 +111,9 @@ public class AttributeController {
      * @return ResponseEntity with no content, indicating successful deletion
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAttribute(
+    public ResponseEntity<ApiResponse<Void>> deleteAttribute(
             @PathVariable Long id) {
         attributeService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "Attribute deleted successfully"));
     }
 }
