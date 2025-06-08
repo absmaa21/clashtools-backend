@@ -2,6 +2,7 @@ package at.htlkaindorf.clashtoolsbackend.dto.baseentity;
 
 import at.htlkaindorf.clashtoolsbackend.dto.attribute.AttributeResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.ResourceType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 
 import java.util.Set;
@@ -23,6 +24,7 @@ import java.util.Set;
 public record SimplifiedBaseEntityLevelDTO(
     Long id,
     Integer level,
+    @JsonIgnoreProperties("baseEntityLevels")
     Set<AttributeResponseDTO> attributes,
     Integer resourceType,
     Integer upgradeCost,
