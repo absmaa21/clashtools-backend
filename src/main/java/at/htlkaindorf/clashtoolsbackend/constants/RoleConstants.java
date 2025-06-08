@@ -32,18 +32,4 @@ public enum RoleConstants {
         return roleName;
     }
 
-    /**
-     * Finds a RoleConstants enum value by its string role name.
-     *
-     * @param roleName The string role name to search for
-     * @return The matching RoleConstants enum value, or null if not found
-     */
-    public static RoleConstants fromRoleName(String roleName) {
-        for (RoleConstants role : values()) {
-            if (role.getRoleName().equals(roleName)) {
-                return role;
-            }
-        }
-        return null;
-    }
 }

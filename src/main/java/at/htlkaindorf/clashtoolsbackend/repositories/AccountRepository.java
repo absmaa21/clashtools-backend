@@ -6,19 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @Tag(name = "AccountRepository", description = "Repository for managing Account objects")
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    /**
-     * Find an account by its name
-     *
-     * @param accountName the name to search for
-     * @return the account if found, or empty optional otherwise
-     */
-    Optional<Account> findByAccountName(String accountName);
-
     /**
      * Check if an account with the given name exists
      *

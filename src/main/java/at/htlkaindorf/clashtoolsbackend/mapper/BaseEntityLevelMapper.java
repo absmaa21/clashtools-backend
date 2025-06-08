@@ -71,17 +71,6 @@ public interface BaseEntityLevelMapper extends EntityMapper<BaseEntityLevel, Bas
     }
 
     /**
-     * Maps the level value directly.
-     *
-     * @param level The level value
-     * @return The level value
-     */
-    @Named("levelIdToEntity")
-    default Integer levelIdToEntity(Integer level) {
-        return level;
-    }
-
-    /**
      * Converts a set of attribute IDs to a set of Attribute entities.
      *
      * @param ids The set of attribute IDs

@@ -1,99 +1,77 @@
 package at.htlkaindorf.clashtoolsbackend.controller;
 
+import at.htlkaindorf.clashtoolsbackend.dto.ApiResponse;
 import at.htlkaindorf.clashtoolsbackend.pojos.RefreshToken;
 import at.htlkaindorf.clashtoolsbackend.pojos.User;
 import at.htlkaindorf.clashtoolsbackend.repositories.RefreshTokenRepository;
 import at.htlkaindorf.clashtoolsbackend.repositories.UserRepository;
 import at.htlkaindorf.clashtoolsbackend.service.RefreshTokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-/**
- * Refresh Token Controller.
- * Provides administrative endpoints for managing refresh tokens in the system.
- * These endpoints are primarily for system administrators to monitor and manage
- * active refresh tokens.
- */
+@Slf4j
 @RestController
 @RequestMapping("/api/refresh-tokens")
 @RequiredArgsConstructor
-//@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "Refresh Tokens", description = "Administrative API for managing refresh tokens")
 public class RefreshTokenController {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
 
-    /**
-     * Get all refresh tokens.
-     * Retrieves a list of all refresh tokens in the system.
-     * This endpoint is restricted to administrators.
-     *
-     * @return ResponseEntity containing a list of RefreshToken objects
-     */
     @GetMapping
-    public ResponseEntity<List<RefreshToken>> getAllRefreshTokens() {
+    @Operation(summary = "Get all refresh tokens",
+               description = "Retrieves a list of all refresh tokens in the system")
+    public ResponseEntity<ApiResponse<List<RefreshToken>>> getAllRefreshTokens() {
+        log.debug("Fetching all refresh tokens");
         List<RefreshToken> tokens = refreshTokenRepository.findAll();
-        return ResponseEntity.ok(tokens);
+        return ResponseEntity.ok(ApiResponse.success(tokens));
     }
 
-    /**
-     * Get refresh tokens for a specific user.
-     * Retrieves all refresh tokens associated with a specific user.
-     * This endpoint is restricted to administrators.
-     *
-     * @param userId The ID of the user whose tokens to retrieve
-     * @return ResponseEntity containing a list of RefreshToken objects
-     * @throws IllegalArgumentException if the user is not found
-     */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<RefreshToken>> getRefreshTokensByUser(
+    @Operation(summary = "Get refresh tokens for a specific user",
+               description = "Retrieves all refresh tokens associated with a specific user")
+    public ResponseEntity<ApiResponse<List<RefreshToken>>> getRefreshTokensByUser(
             @PathVariable Long userId) {
+        log.debug("Fetching refresh tokens for user ID: {}", userId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         List<RefreshToken> tokens = refreshTokenRepository.findByUser(user);
-        return ResponseEntity.ok(tokens);
+        return ResponseEntity.ok(ApiResponse.success(tokens));
     }
 
-    /**
-     * Invalidate a specific refresh token.
-     * Deletes a refresh token identified by its ID.
-     * This endpoint is restricted to administrators.
-     *
-     * @param tokenId The ID of the token to invalidate
-     * @return ResponseEntity with no content, indicating successful deletion
-     * @throws IllegalArgumentException if the token is not found
-     */
     @DeleteMapping("/{tokenId}")
-    public ResponseEntity<Void> invalidateToken(
+    @Operation(summary = "Invalidate a specific refresh token",
+               description = "Deletes a refresh token identified by its ID")
+    public ResponseEntity<ApiResponse<Void>> invalidateToken(
             @PathVariable Long tokenId) {
+        log.debug("Invalidating refresh token with ID: {}", tokenId);
         RefreshToken token = refreshTokenRepository.findById(tokenId)
                 .orElseThrow(() -> new IllegalArgumentException("Token not found"));
 
         refreshTokenRepository.delete(token);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "Token invalidated successfully"));
     }
 
-    /**
-     * Invalidate all refresh tokens for a specific user.
-     * Deletes all refresh tokens associated with a specific user.
-     * This endpoint is restricted to administrators.
-     *
-     * @param userId The ID of the user whose tokens to invalidate
-     * @return ResponseEntity with no content, indicating successful deletion
-     * @throws IllegalArgumentException if the user is not found
-     */
     @DeleteMapping("/user/{userId}")
-    public ResponseEntity<Void> invalidateAllTokensForUser(
+    @Operation(summary = "Invalidate all refresh tokens for a specific user",
+               description = "Deletes all refresh tokens associated with a specific user")
+    public ResponseEntity<ApiResponse<Void>> invalidateAllTokensForUser(
             @PathVariable Long userId) {
+        log.debug("Invalidating all refresh tokens for user ID: {}", userId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         refreshTokenService.deleteByUser(user);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success(null, "All tokens for user invalidated successfully"));
     }
 }
