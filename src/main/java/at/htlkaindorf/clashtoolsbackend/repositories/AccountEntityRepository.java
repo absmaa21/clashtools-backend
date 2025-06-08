@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 public interface AccountEntityRepository extends JpaRepository<AccountEntity, Long> {
 
-    @Query("SELECT id, account, baseEntity, currentLevel, upgradeStart FROM AccountEntity WHERE account.id = ?1")
     List<AccountEntity> findAllByAccountId(Long accountId);
 
 }

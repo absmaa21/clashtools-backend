@@ -1,6 +1,5 @@
 package at.htlkaindorf.clashtoolsbackend.service;
 
-import at.htlkaindorf.clashtoolsbackend.dto.account.AccountEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.account.AccountEntityRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.account.SimplifiedAccountEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.mapper.AccountEntityMapper;
@@ -37,9 +36,9 @@ public class AccountEntityService {
      * Retrieves all account entities for a specific account.
      *
      * @param accountId The ID of the account to retrieve entities for
-     * @return A list of SimplifiedAccountEntityDTO objects representing the account entities
+     * @return An array of SimplifiedAccountEntityDTO objects representing the account entities
      */
-    public List<SimplifiedAccountEntityDTO> getAllAccEntities(Long accountId) {
+    public SimplifiedAccountEntityDTO[] getAllAccEntities(Long accountId) {
         List<AccountEntity> accountEntities = accountEntityRepository.findAllByAccountId(accountId);
         return simplifiedAccountEntityMapper.toDTOList(accountEntities);
     }

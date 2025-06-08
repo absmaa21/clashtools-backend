@@ -1,7 +1,6 @@
 package at.htlkaindorf.clashtoolsbackend.controller;
 
 import at.htlkaindorf.clashtoolsbackend.dto.ApiResponse;
-import at.htlkaindorf.clashtoolsbackend.dto.account.AccountEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.account.AccountEntityRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.account.SimplifiedAccountEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.service.AccountEntityService;
@@ -11,8 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Controller for managing account entities.
@@ -30,14 +27,14 @@ public class AccountEntityController {
      * Get all account entities for a specific account.
      *
      * @param accountId The ID of the account to retrieve entities for
-     * @return ResponseEntity containing a list of SimplifiedAccountEntityDTO objects
+     * @return ResponseEntity containing an array of SimplifiedAccountEntityDTO objects
      */
     @GetMapping("/account/{accountId}")
     @Operation(summary = "Get all account entities for a specific account")
-    public ResponseEntity<ApiResponse<List<SimplifiedAccountEntityDTO>>> getAccEntitiesByAccountId(
+    public ResponseEntity<ApiResponse<SimplifiedAccountEntityDTO[]>> getAccEntitiesByAccountId(
             @PathVariable Long accountId
     ) {
-        List<SimplifiedAccountEntityDTO> accountEntityDTOS = accountEntityService.getAllAccEntities(accountId);
+        SimplifiedAccountEntityDTO[] accountEntityDTOS = accountEntityService.getAllAccEntities(accountId);
         return ResponseEntity.ok(ApiResponse.success(accountEntityDTOS));
     }
 

@@ -29,10 +29,10 @@ public interface SimplifiedAccountEntityMapper {
     SimplifiedAccountEntityDTO toDTO(AccountEntity accountEntity);
 
     /**
-     * Converts a list of AccountEntity entities to a list of SimplifiedAccountEntityDTOs.
+     * Converts a list of AccountEntity entities to an array of SimplifiedAccountEntityDTOs.
      *
      * @param accountEntities The list of entities to convert
-     * @return The list of simplified DTOs
+     * @return The array of simplified DTOs
      */
-    List<SimplifiedAccountEntityDTO> toDTOList(List<AccountEntity> accountEntities);
+    SimplifiedAccountEntityDTO[] toDTOList(List<AccountEntity> accountEntities);
 }
