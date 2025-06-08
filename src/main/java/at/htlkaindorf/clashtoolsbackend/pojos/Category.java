@@ -17,5 +17,5 @@ public enum Category {
     ARMY,
     RESOURCES,
     DEFENSE,
-    WALL,
+    WALL
 }

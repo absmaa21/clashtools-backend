@@ -26,10 +26,29 @@ import java.util.List;
 @Tag(name = "AccountEntityService", description = "Service for managing account entities")
 public class AccountEntityService {
 
+    /**
+     * Repository for account entity operations.
+     */
     private final AccountEntityRepository accountEntityRepository;
+
+    /**
+     * Repository for account operations.
+     */
     private final AccountRepository accountRepository;
+
+    /**
+     * Repository for base entity operations.
+     */
     private final BaseEntityRepository baseEntityRepository;
+
+    /**
+     * Mapper for converting between AccountEntity and AccountEntityDTO.
+     */
     private final AccountEntityMapper accountEntityMapper;
+
+    /**
+     * Mapper for converting between AccountEntity and SimplifiedAccountEntityDTO.
+     */
     private final SimplifiedAccountEntityMapper simplifiedAccountEntityMapper;
 
     /**

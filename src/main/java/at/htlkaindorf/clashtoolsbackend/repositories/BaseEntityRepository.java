@@ -56,6 +56,7 @@ public interface BaseEntityRepository extends JpaRepository<BaseEntity, Long> {
     /**
      * Find all base entities with their baseEntityLevels eagerly loaded.
      * This query uses a join fetch to load the baseEntityLevels in a single query.
+     * It also explicitly selects the category field to ensure it's properly loaded.
      *
      * @return A list of BaseEntity objects with their baseEntityLevels eagerly loaded
      */
