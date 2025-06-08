@@ -51,7 +51,7 @@ public interface BaseEntityRepository extends JpaRepository<BaseEntity, Long> {
      *
      * @return A list of BaseEntity objects with their baseEntityLevels eagerly loaded
      */
-    @Query("SELECT be, be.category FROM BaseEntity be LEFT JOIN FETCH be.baseEntityLevels")
+    @Query("SELECT DISTINCT be FROM BaseEntity be LEFT JOIN FETCH be.baseEntityLevels")
     List<BaseEntity> findAllWithLevels();
 
     /**
