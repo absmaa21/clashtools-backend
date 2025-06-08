@@ -10,6 +10,7 @@ import at.htlkaindorf.clashtoolsbackend.pojos.User;
 import at.htlkaindorf.clashtoolsbackend.repositories.RefreshTokenRepository;
 import at.htlkaindorf.clashtoolsbackend.repositories.UserRepository;
 import at.htlkaindorf.clashtoolsbackend.service.AuthService;
+import at.htlkaindorf.clashtoolsbackend.service.CurrentUserService;
 import at.htlkaindorf.clashtoolsbackend.service.JwtService;
 import at.htlkaindorf.clashtoolsbackend.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
@@ -17,8 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,23 +37,24 @@ public class AuthController {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
+    private final CurrentUserService currentUserService;
 
     /**
      * Logs out the user.
      * Logs out the currently authenticated user and invalidates their session by removing any refresh tokens.
      *
-     * @param userDetails The details of the currently authenticated user
      * @return ResponseEntity with a success message
      * @throws IllegalArgumentException if the user is not found
      */
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(
-            @AuthenticationPrincipal UserDetails userDetails) {
-        User user = userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        authService.logout(user);
-        return ResponseEntity.ok(ApiResponse.success(null, "Logged out successfully"));
+    public ResponseEntity<ApiResponse<Void>> logout() {
+        try {
+            User user = currentUserService.getCurrentUser();
+            authService.logout(user);
+            return ResponseEntity.ok(ApiResponse.success(null, "Logged out successfully"));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.ok(ApiResponse.success(null, "No user to logout"));
+        }
     }
 
     /**
