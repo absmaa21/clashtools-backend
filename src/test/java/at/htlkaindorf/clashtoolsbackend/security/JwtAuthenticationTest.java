@@ -3,6 +3,7 @@ package at.htlkaindorf.clashtoolsbackend.security;
 import at.htlkaindorf.clashtoolsbackend.config.JwtAuthenticationFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -63,9 +63,9 @@ public class JwtAuthenticationTest {
     }
 
     @Test
-    void testNoAuthorizationHeader() throws ServletException, IOException {
+    void testNoCookies() throws ServletException, IOException {
         // Setup
-        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(null);
+        when(request.getCookies()).thenReturn(null);
 
         // Execute
         jwtAuthenticationFilter.doFilter(request, response, filterChain);
@@ -76,9 +76,12 @@ public class JwtAuthenticationTest {
     }
 
     @Test
-    void testInvalidAuthorizationHeader() throws ServletException, IOException {
+    void testCookiesWithoutAccessToken() throws ServletException, IOException {
         // Setup
-        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("InvalidHeader");
+        Cookie[] cookies = new Cookie[] {
+            new Cookie("some_cookie", "some_value")
+        };
+        when(request.getCookies()).thenReturn(cookies);
 
         // Execute
         jwtAuthenticationFilter.doFilter(request, response, filterChain);
@@ -92,7 +95,11 @@ public class JwtAuthenticationTest {
     void testValidTokenButInvalidUser() throws ServletException, IOException {
         // Setup
         String token = "valid.token.string";
-        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Bearer " + token);
+        Cookie[] cookies = new Cookie[] {
+            new Cookie("access_token", token)
+        };
+        when(request.getCookies()).thenReturn(cookies);
+
         jwtService.setExtractedUsername("testuser");
         jwtService.setValidationResult(false);
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(testUserDetails);
@@ -109,7 +116,11 @@ public class JwtAuthenticationTest {
     void testValidTokenAndValidUser() throws ServletException, IOException {
         // Setup
         String token = "valid.token.string";
-        when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Bearer " + token);
+        Cookie[] cookies = new Cookie[] {
+            new Cookie("access_token", token)
+        };
+        when(request.getCookies()).thenReturn(cookies);
+
         jwtService.setExtractedUsername("testuser");
         jwtService.setValidationResult(true);
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(testUserDetails);
