@@ -32,7 +32,7 @@ public class JwtService {
     private String secretString;
 
     private SecretKey secretKey;
-    private static final Duration EXPIRATION_TIME = Duration.ofHours(1); // 1h Token-Lebensdauer
+    private static final Duration EXPIRATION_TIME = Duration.ofHours(1);
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     @PostConstruct
@@ -54,7 +54,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .claim("roles", user.getRoles().stream()
-                        .map(Role::getName) // Role-Name extrahieren
+                        .map(Role::getName)
                         .toList()
                 )
                 .setIssuedAt(now)

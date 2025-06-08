@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class FavoriteTargetPet {
     private FavoriteTarget favoriteTargetEnum;
     private int multiplicator;
-    //frosty pet spriti huans fox
     private Range radius;
 }

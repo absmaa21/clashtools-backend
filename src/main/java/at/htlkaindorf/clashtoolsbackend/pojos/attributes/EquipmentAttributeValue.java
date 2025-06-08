@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 public class EquipmentAttributeValue extends AttributeValue<Equipment> {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipment_id") // optional: Name der Fremdschlüsselspalte
+    @JoinColumn(name = "equipment_id")
     private Equipment value;
 
     @Override

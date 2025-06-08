@@ -79,9 +79,7 @@ public class AttributeService extends AbstractCrudService<Attribute, AttributeRe
 
         attribute.setAttributeName(attributeName);
 
-        // Update translations if provided
         if (request.getTranslations() != null && !request.getTranslations().isEmpty()) {
-            // Clear existing translations and add new ones
             attribute.getTranslations().clear();
             Attribute updatedAttribute = attributeMapper.toEntity(request);
             if (updatedAttribute.getTranslations() != null) {

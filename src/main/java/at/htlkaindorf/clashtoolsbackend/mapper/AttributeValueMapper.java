@@ -76,7 +76,6 @@ public interface AttributeValueMapper {
             return null;
         }
 
-        // For the value, we need to handle each subclass differently due to protected access
         if (attributeValue instanceof IntegerAttributeValue) {
             return ((IntegerAttributeValue) attributeValue).getValue();
         } else if (attributeValue instanceof StringAttributeValue) {

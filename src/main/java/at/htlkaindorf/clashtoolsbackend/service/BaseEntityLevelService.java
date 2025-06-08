@@ -54,7 +54,6 @@ public class BaseEntityLevelService extends AbstractCrudService<BaseEntityLevel,
      * @throws IllegalArgumentException If no base entity with the given ID exists in the database
      */
     public List<BaseEntityLevelResponseDTO> getBaseEntityLevelsByBaseEntityId(Long baseEntityId) {
-        // Verify that the base entity exists
         baseEntityRepository.findById(baseEntityId)
                 .orElseThrow(() -> new IllegalArgumentException("Base entity not found"));
 
@@ -74,17 +73,14 @@ public class BaseEntityLevelService extends AbstractCrudService<BaseEntityLevel,
      */
     @Override
     public BaseEntityLevelResponseDTO create(BaseEntityLevelRequestDTO requestDTO) {
-        // Verify that the base entity exists
         BaseEntity baseEntity = baseEntityRepository.findById(requestDTO.getBaseEntityId())
                 .orElseThrow(() -> new IllegalArgumentException("Base entity not found"));
 
-        // Check if a base entity level with the same base entity and level already exists
         baseEntityLevelRepository.findByBaseEntityAndLevel(baseEntity, requestDTO.getLevel())
                 .ifPresent(existingLevel -> {
                     throw new IllegalArgumentException("A base entity level with the same base entity and level already exists");
                 });
 
-        // Verify that all attributes exist
         Set<Attribute> attributes = new HashSet<>();
         if (requestDTO.getAttributeIds() != null && !requestDTO.getAttributeIds().isEmpty()) {
             attributes = requestDTO.getAttributeIds().stream()
@@ -96,7 +92,6 @@ public class BaseEntityLevelService extends AbstractCrudService<BaseEntityLevel,
         BaseEntityLevel baseEntityLevel = baseEntityLevelMapper.toEntity(requestDTO);
         baseEntityLevel.setAttributes(attributes);
 
-        // Explicitly set all fields for clarity and consistency
         baseEntityLevel.setResourceType(requestDTO.getResourceType());
         baseEntityLevel.setUpgradeCost(requestDTO.getUpgradeCost());
         baseEntityLevel.setUpgradeTime(requestDTO.getUpgradeTime());
@@ -122,11 +117,9 @@ public class BaseEntityLevelService extends AbstractCrudService<BaseEntityLevel,
         BaseEntityLevel baseEntityLevel = baseEntityLevelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Base entity level not found"));
 
-        // Verify that the base entity exists
         BaseEntity baseEntity = baseEntityRepository.findById(requestDTO.getBaseEntityId())
                 .orElseThrow(() -> new IllegalArgumentException("Base entity not found"));
 
-        // Check if a base entity level with the same base entity and level already exists (and it's not the one being updated)
         baseEntityLevelRepository.findByBaseEntityAndLevel(baseEntity, requestDTO.getLevel())
                 .ifPresent(existingLevel -> {
                     if (!existingLevel.getId().equals(id)) {
@@ -134,7 +127,6 @@ public class BaseEntityLevelService extends AbstractCrudService<BaseEntityLevel,
                     }
                 });
 
-        // Verify that all attributes exist
         Set<Attribute> attributes = new HashSet<>();
         if (requestDTO.getAttributeIds() != null && !requestDTO.getAttributeIds().isEmpty()) {
             attributes = requestDTO.getAttributeIds().stream()
@@ -147,7 +139,6 @@ public class BaseEntityLevelService extends AbstractCrudService<BaseEntityLevel,
         baseEntityLevel.setLevel(requestDTO.getLevel());
         baseEntityLevel.setAttributes(attributes);
 
-        // Update the additional fields
         baseEntityLevel.setResourceType(requestDTO.getResourceType());
         baseEntityLevel.setUpgradeCost(requestDTO.getUpgradeCost());
         baseEntityLevel.setUpgradeTime(requestDTO.getUpgradeTime());

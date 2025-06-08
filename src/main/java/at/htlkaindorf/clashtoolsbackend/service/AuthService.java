@@ -36,7 +36,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
-    private final RoleRepository roleRepository; // Used for default role assignment
+    private final RoleRepository roleRepository;
 
     /**
      * Registers a new user in the system.

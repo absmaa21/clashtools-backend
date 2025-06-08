@@ -91,23 +91,20 @@ public class AccountService extends AbstractCrudService<Account, AccountResponse
         Account account = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
 
-        // Check if the new account name is already taken by another account
         if (!account.getAccountName().equals(request.getAccountName()) &&
                 accountRepository.existsByAccountName(request.getAccountName())) {
             throw new IllegalArgumentException("Account name already exists");
         }
 
-        // Check if the user exists if the user ID is being changed
         if (!account.getUser().getId().equals(request.getUserId())) {
             User user = userRepository.findById(request.getUserId())
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
             account.setUser(user);
         }
 
-        // Create a new entity from the request and set its ID
         Account updatedAccount = mapper.toEntity(request);
         setEntityId(updatedAccount, id);
-        updatedAccount.setUser(account.getUser()); // Preserve the user relationship
+        updatedAccount.setUser(account.getUser());
 
         return mapper.toDTO(repository.save(updatedAccount));
     }

@@ -14,7 +14,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Add resource handlers for Swagger UI
         registry.addResourceHandler("/swagger-ui/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/")
                 .resourceChain(false);
@@ -25,14 +24,12 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
 
-        // Add handler for OpenAPI definition file
         registry.addResourceHandler("/openapi.yaml")
                 .addResourceLocations("classpath:/openapi.yaml");
     }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        // Redirect from /swagger-ui to /swagger-ui.html
         registry.addRedirectViewController("/swagger-ui", "/swagger-ui.html");
     }
 }

@@ -75,7 +75,6 @@ public abstract class AbstractCrudService<E, D, R, ID> implements CrudService<E,
      */
     @Override
     public D update(ID id, R request) {
-        // Verify entity exists
         repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Entity not found with id: " + id));
 

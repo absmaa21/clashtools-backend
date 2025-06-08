@@ -64,7 +64,6 @@ public class AttributeValueService {
      * @throws IllegalArgumentException If no attribute with the given ID exists in the database
      */
     public List<AttributeValueDTO> getAttributeValuesByAttributeId(Long attributeId) {
-        // Verify that the attribute exists
         attributeRepository.findById(attributeId)
                 .orElseThrow(() -> new IllegalArgumentException("Attribute not found"));
 
@@ -81,7 +80,6 @@ public class AttributeValueService {
      * @throws IllegalArgumentException If no base entity level with the given ID exists in the database
      */
     public List<AttributeValueDTO> getAttributeValuesByBaseEntityLevelId(Long baseEntityLevelId) {
-        // Verify that the base entity level exists
         baseEntityLevelRepository.findById(baseEntityLevelId)
                 .orElseThrow(() -> new IllegalArgumentException("Base entity level not found"));
 

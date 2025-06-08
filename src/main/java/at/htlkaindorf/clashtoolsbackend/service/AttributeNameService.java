@@ -7,8 +7,6 @@ import at.htlkaindorf.clashtoolsbackend.repositories.AttributeNameRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * Service for managing attribute names in the system.
  * This service provides methods for creating, retrieving, updating, and deleting attribute names,
@@ -65,7 +63,6 @@ public class AttributeNameService extends AbstractCrudService<AttributeName, Att
         AttributeName attributeName = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Attribute name not found"));
 
-        // Check if the name is being changed and if the new name already exists
         if (!attributeName.getName().equals(request.getName()) &&
                 attributeNameRepository.existsByName(request.getName())) {
             throw new IllegalArgumentException("Attribute name already exists");
