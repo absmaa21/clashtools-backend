@@ -2,8 +2,8 @@ package at.htlkaindorf.clashtoolsbackend.dto.baseentity;
 
 import at.htlkaindorf.clashtoolsbackend.dto.attribute.AttributeResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.ResourceType;
+import lombok.Builder;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -14,87 +14,38 @@ import java.util.Set;
  * @param id The unique identifier for the base entity level
  * @param level The level value for this base entity level
  * @param attributes The attributes associated with this base entity level
- * @param resourceType The type of resource required for upgrading this base entity level
+ * @param resourceType The type of resource required for upgrading this base entity level, represented as an integer (ordinal value of ResourceType enum)
  * @param upgradeCost The cost to upgrade to this level, in the specified resource type
  * @param upgradeTime The time required to upgrade to this level, in seconds
  * @param imgPath The path to the image representing this base entity level
  */
+@Builder
 public record SimplifiedBaseEntityLevelDTO(
     Long id,
     Integer level,
     Set<AttributeResponseDTO> attributes,
-    ResourceType resourceType,
+    Integer resourceType,
     Integer upgradeCost,
     Integer upgradeTime,
     String imgPath
 ) {
-    /**
-     * Default constructor for deserialization.
-     */
-    public SimplifiedBaseEntityLevelDTO() {
-        this(null, null, new HashSet<>(), null, null, null, null);
-    }
+
 
     /**
-     * Static factory method to create a builder for this record.
-     * This provides similar functionality to the Lombok @Builder annotation.
+     * Utility method to convert the integer resourceType back to ResourceType enum.
+     * This can be useful for backward compatibility with code that expects a ResourceType.
      *
-     * @return A new builder for creating SimplifiedBaseEntityLevelDTO instances
+     * @param resourceTypeOrdinal the ordinal value of the ResourceType
+     * @return the corresponding ResourceType enum value, or null if the ordinal is null or invalid
      */
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    /**
-     * Builder class for SimplifiedBaseEntityLevelDTO.
-     * This provides similar functionality to the Lombok @Builder annotation.
-     */
-    public static class Builder {
-        private Long id;
-        private Integer level;
-        private Set<AttributeResponseDTO> attributes = new HashSet<>();
-        private ResourceType resourceType;
-        private Integer upgradeCost;
-        private Integer upgradeTime;
-        private String imgPath;
-
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
+    public static ResourceType getResourceTypeFromOrdinal(Integer resourceTypeOrdinal) {
+        if (resourceTypeOrdinal == null) {
+            return null;
         }
-
-        public Builder level(Integer level) {
-            this.level = level;
-            return this;
-        }
-
-        public Builder attributes(Set<AttributeResponseDTO> attributes) {
-            this.attributes = attributes;
-            return this;
-        }
-
-        public Builder resourceType(ResourceType resourceType) {
-            this.resourceType = resourceType;
-            return this;
-        }
-
-        public Builder upgradeCost(Integer upgradeCost) {
-            this.upgradeCost = upgradeCost;
-            return this;
-        }
-
-        public Builder upgradeTime(Integer upgradeTime) {
-            this.upgradeTime = upgradeTime;
-            return this;
-        }
-
-        public Builder imgPath(String imgPath) {
-            this.imgPath = imgPath;
-            return this;
-        }
-
-        public SimplifiedBaseEntityLevelDTO build() {
-            return new SimplifiedBaseEntityLevelDTO(id, level, attributes, resourceType, upgradeCost, upgradeTime, imgPath);
+        try {
+            return ResourceType.values()[resourceTypeOrdinal];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
         }
     }
 }

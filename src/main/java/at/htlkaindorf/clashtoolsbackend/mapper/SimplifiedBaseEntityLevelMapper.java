@@ -2,8 +2,10 @@ package at.htlkaindorf.clashtoolsbackend.mapper;
 
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.SimplifiedBaseEntityLevelDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntityLevel;
+import at.htlkaindorf.clashtoolsbackend.pojos.ResourceType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.Set;
 
@@ -16,6 +18,17 @@ import java.util.Set;
 public interface SimplifiedBaseEntityLevelMapper {
 
     /**
+     * Maps a ResourceType enum to its ordinal value (integer).
+     *
+     * @param resourceType The ResourceType enum to convert
+     * @return The ordinal value of the ResourceType enum, or null if the input is null
+     */
+    @Named("mapResourceTypeToInteger")
+    default Integer mapResourceTypeToInteger(ResourceType resourceType) {
+        return resourceType != null ? resourceType.ordinal() : null;
+    }
+
+    /**
      * Converts a BaseEntityLevel entity to a SimplifiedBaseEntityLevelDTO.
      *
      * @param baseEntityLevel The entity to convert
@@ -23,7 +36,7 @@ public interface SimplifiedBaseEntityLevelMapper {
      */
     @Mapping(source = "level", target = "level")
     @Mapping(source = "attributes", target = "attributes")
-    @Mapping(source = "resourceType", target = "resourceType")
+    @Mapping(source = "resourceType", target = "resourceType", qualifiedByName = "mapResourceTypeToInteger")
     @Mapping(source = "upgradeCost", target = "upgradeCost")
     @Mapping(source = "upgradeTime", target = "upgradeTime")
     @Mapping(source = "imgPath", target = "imgPath")
