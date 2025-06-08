@@ -85,8 +85,9 @@ public class AuthController {
         accessTokenCookie.setHttpOnly(true); // Prevent JavaScript access for better security
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(3600); // 1 hour
-        accessTokenCookie.setSecure(true); // For HTTPS only
-        accessTokenCookie.setAttribute("SameSite", "None"); // For cross-origin requests
+        accessTokenCookie.setSecure(false); // Disabled secure cookies as requested
+        // SameSite=None typically requires Secure=true, so changing to Lax
+        accessTokenCookie.setAttribute("SameSite", "Lax"); // For cross-origin requests
         httpServletResponse.addCookie(accessTokenCookie);
 
         AuthResponseDTO authResponse = new AuthResponseDTO(newJwt, request.getRefreshToken());
@@ -131,8 +132,9 @@ public class AuthController {
         accessTokenCookie.setHttpOnly(true); // Prevent JavaScript access for better security
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(3600); // 1 hour
-        accessTokenCookie.setSecure(true); // For HTTPS only
-        accessTokenCookie.setAttribute("SameSite", "None"); // For cross-origin requests
+        accessTokenCookie.setSecure(false); // Disabled secure cookies as requested
+        // SameSite=None typically requires Secure=true, so changing to Lax
+        accessTokenCookie.setAttribute("SameSite", "Lax"); // For cross-origin requests
         httpServletResponse.addCookie(accessTokenCookie);
 
         return ResponseEntity.ok(ApiResponse.success(response, "Login successful"));
