@@ -50,6 +50,6 @@ public class AccountEntity {
      * Given in milliseconds since the epoch.
      * Null if no upgrade is in progress.
      */
-    private Integer upgradeStart;
+    private Long upgradeStart;
 
 }

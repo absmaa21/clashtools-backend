@@ -134,7 +134,7 @@ public class AccountEntityService {
      * @return A SimplifiedAccountEntityDTO representing the updated account entity
      * @throws IllegalArgumentException if the account entity doesn't exist
      */
-    public SimplifiedAccountEntityDTO updateUpgradeStart(Long id, Integer upgradeStart) {
+    public SimplifiedAccountEntityDTO updateUpgradeStart(Long id, Long upgradeStart) {
         AccountEntity accountEntity = accountEntityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("AccountEntity not found"));
 

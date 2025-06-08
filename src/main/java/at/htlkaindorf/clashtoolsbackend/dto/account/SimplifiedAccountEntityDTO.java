@@ -39,5 +39,5 @@ public class SimplifiedAccountEntityDTO {
      * The timestamp when the upgrade for this entity started, if any.
      * This field can be null if no upgrade is in progress.
      */
-    private Integer upgradeStart;
+    private Long upgradeStart;
 }

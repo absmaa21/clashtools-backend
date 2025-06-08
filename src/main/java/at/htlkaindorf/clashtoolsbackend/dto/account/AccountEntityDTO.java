@@ -24,6 +24,6 @@ public class AccountEntityDTO {
     @NotNull
     private Integer level;
 
-    private Integer upgradeStart;
+    private Long upgradeStart;
 
 }

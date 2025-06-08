@@ -96,7 +96,7 @@ public class AccountEntityController {
     @Operation(summary = "Update the upgrade start time for an account entity")
     public ResponseEntity<ApiResponse<SimplifiedAccountEntityDTO>> updateUpgradeStart(
             @PathVariable Long id,
-            @RequestParam Integer upgradeStart
+            @RequestParam Long upgradeStart
     ) {
         SimplifiedAccountEntityDTO accountEntityDTO = accountEntityService.updateUpgradeStart(id, upgradeStart);
         return ResponseEntity.ok(ApiResponse.success(accountEntityDTO, "Upgrade start time updated successfully"));
