@@ -2,11 +2,10 @@ package at.htlkaindorf.clashtoolsbackend.service;
 
 import at.htlkaindorf.clashtoolsbackend.pojos.User;
 import at.htlkaindorf.clashtoolsbackend.repositories.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * Service for accessing the currently authenticated user.
@@ -19,20 +18,20 @@ public class CurrentUserService {
     private final UserRepository userRepository;
 
     /**
-     * Gets the currently authenticated user from the request attribute.
+     * Gets the currently authenticated user.
      *
      * @return The User entity of the currently authenticated user
      * @throws IllegalStateException if no authenticated user is found
      */
     public User getCurrentUser() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        User user = (User) request.getAttribute("currentUser");
-
-        if (user == null) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalStateException("No authenticated user found");
         }
 
-        return user;
+        String username = authentication.getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
     }
 
     /**
