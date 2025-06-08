@@ -28,6 +28,18 @@ public interface BaseEntityMapper extends EntityMapper<BaseEntity, BaseEntityDTO
 
     List<BaseEntityResponseDTO> toResponseDTOList(List<BaseEntity> baseEntities);
 
+    /**
+     * Internal method used by toResponseDTOList to convert a BaseEntity to a BaseEntityResponseDTO.
+     * This method ensures that the category field is properly mapped to categoryId.
+     *
+     * @param baseEntity The entity to convert
+     * @return The converted DTO
+     */
+    @org.mapstruct.Mapping(target = "categoryId", expression = "java(mapCategoryToInteger(baseEntity.getCategory()))")
+    @org.mapstruct.Mapping(target = "baseEntityLevels", source = "baseEntityLevels")
+    @org.mapstruct.Mapping(target = "level", constant = "0")
+    BaseEntityResponseDTO baseEntityToBaseEntityResponseDTO(BaseEntity baseEntity);
+
     @org.mapstruct.Mapping(target = "id", ignore = true)
     @org.mapstruct.Mapping(target = "baseEntityLevels", ignore = true)
     BaseEntity toEntity(BaseEntityRequestDTO requestDTO);
