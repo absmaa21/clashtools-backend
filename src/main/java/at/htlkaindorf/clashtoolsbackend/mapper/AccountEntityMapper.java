@@ -10,15 +10,32 @@ import java.util.List;
 /**
  * Mapper interface for converting between AccountEntity entities and DTOs.
  * Extends the generic EntityMapper interface with specific entity and DTO types.
+ * Uses BaseEntityMapper to convert BaseEntity to BaseEntityResponseDTO to prevent circular references.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {BaseEntityMapper.class})
 public interface AccountEntityMapper extends EntityMapper<AccountEntity, AccountEntityDTO, AccountEntityDTO> {
 
-    @Mapping(source = "baseEntity", target = "entity")
+    /**
+     * Converts an AccountEntity to an AccountEntityDTO.
+     * Uses BaseEntityMapper to convert BaseEntity to SimpleBaseEntityResponseDTO to prevent circular references.
+     * SimpleBaseEntityResponseDTO is a simplified version of BaseEntityResponseDTO without the set of levels,
+     * which helps to avoid infinite loops during serialization.
+     *
+     * @param accountEntity The entity to convert
+     * @return The converted DTO
+     */
+    @Mapping(source = "baseEntity", target = "entity", qualifiedByName = "toSimpleResponseDTO")
     @Mapping(source = "currentLevel", target = "level")
     @Override
     AccountEntityDTO toDTO(AccountEntity accountEntity);
 
+    /**
+     * Converts an AccountEntityDTO to an AccountEntity.
+     * Note: This method is not recommended for direct use as it may not handle all relationships correctly.
+     *
+     * @param accountEntityDTO The DTO to convert
+     * @return The converted entity
+     */
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "entity", target = "baseEntity")
     @Mapping(source = "level", target = "currentLevel")

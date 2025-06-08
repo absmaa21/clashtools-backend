@@ -3,6 +3,7 @@ package at.htlkaindorf.clashtoolsbackend.mapper;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityRequestDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.baseentity.BaseEntityResponseDTO;
+import at.htlkaindorf.clashtoolsbackend.dto.baseentity.SimpleBaseEntityResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
 import at.htlkaindorf.clashtoolsbackend.pojos.Category;
 import org.mapstruct.Mapper;
@@ -19,6 +20,7 @@ public interface BaseEntityMapper extends EntityMapper<BaseEntity, BaseEntityDTO
     @org.mapstruct.Mapping(target = "level", ignore = true)
     BaseEntityDTO toDTO(BaseEntity baseEntity);
 
+    @org.mapstruct.Named("toResponseDTO")
     @org.mapstruct.Mapping(target = "categoryId", expression = "java(mapCategoryToInteger(baseEntity.getCategory()))")
     @org.mapstruct.Mapping(target = "baseEntityLevels", source = "baseEntityLevels")
     @org.mapstruct.Mapping(target = "level", ignore = true)
@@ -39,4 +41,17 @@ public interface BaseEntityMapper extends EntityMapper<BaseEntity, BaseEntityDTO
     default Integer mapCategoryToInteger(Category category) {
         return category != null ? category.ordinal() : null;
     }
+
+    /**
+     * Converts a BaseEntity to a SimpleBaseEntityResponseDTO.
+     * This method creates a simplified version of BaseEntityResponseDTO without the set of levels,
+     * to prevent circular references.
+     *
+     * @param baseEntity The entity to convert
+     * @return The converted simplified DTO
+     */
+    @org.mapstruct.Named("toSimpleResponseDTO")
+    @org.mapstruct.Mapping(target = "categoryId", expression = "java(mapCategoryToInteger(baseEntity.getCategory()))")
+    @org.mapstruct.Mapping(target = "level", ignore = true)
+    SimpleBaseEntityResponseDTO toSimpleResponseDTO(BaseEntity baseEntity);
 }

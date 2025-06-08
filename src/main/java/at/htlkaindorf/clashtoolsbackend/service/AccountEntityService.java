@@ -2,7 +2,9 @@ package at.htlkaindorf.clashtoolsbackend.service;
 
 import at.htlkaindorf.clashtoolsbackend.dto.account.AccountEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.account.AccountEntityRequestDTO;
+import at.htlkaindorf.clashtoolsbackend.dto.account.SimplifiedAccountEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.mapper.AccountEntityMapper;
+import at.htlkaindorf.clashtoolsbackend.mapper.SimplifiedAccountEntityMapper;
 import at.htlkaindorf.clashtoolsbackend.pojos.Account;
 import at.htlkaindorf.clashtoolsbackend.pojos.AccountEntity;
 import at.htlkaindorf.clashtoolsbackend.pojos.BaseEntity;
@@ -29,39 +31,40 @@ public class AccountEntityService {
     private final AccountRepository accountRepository;
     private final BaseEntityRepository baseEntityRepository;
     private final AccountEntityMapper accountEntityMapper;
+    private final SimplifiedAccountEntityMapper simplifiedAccountEntityMapper;
 
     /**
      * Retrieves all account entities for a specific account.
      *
      * @param accountId The ID of the account to retrieve entities for
-     * @return A list of AccountEntityDTO objects representing the account entities
+     * @return A list of SimplifiedAccountEntityDTO objects representing the account entities
      */
-    public List<AccountEntityDTO> getAllAccEntities(Long accountId) {
+    public List<SimplifiedAccountEntityDTO> getAllAccEntities(Long accountId) {
         List<AccountEntity> accountEntities = accountEntityRepository.findAllByAccountId(accountId);
-        return accountEntities.stream().map(accountEntityMapper::toDTO).toList();
+        return simplifiedAccountEntityMapper.toDTOList(accountEntities);
     }
 
     /**
      * Retrieves a specific account entity by its ID.
      *
      * @param id The ID of the account entity to retrieve
-     * @return An AccountEntityDTO representing the requested account entity
+     * @return A SimplifiedAccountEntityDTO representing the requested account entity
      * @throws IllegalArgumentException if no account entity with the given ID exists
      */
-    public AccountEntityDTO getAccountEntityById(Long id) {
+    public SimplifiedAccountEntityDTO getAccountEntityById(Long id) {
         AccountEntity accountEntity = accountEntityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("AccountEntity not found"));
-        return accountEntityMapper.toDTO(accountEntity);
+        return simplifiedAccountEntityMapper.toDTO(accountEntity);
     }
 
     /**
      * Creates a new account entity.
      *
      * @param request The AccountEntityRequestDTO containing the data for the new account entity
-     * @return An AccountEntityDTO representing the newly created account entity
+     * @return A SimplifiedAccountEntityDTO representing the newly created account entity
      * @throws IllegalArgumentException if the account or base entity doesn't exist
      */
-    public AccountEntityDTO createAccountEntity(AccountEntityRequestDTO request) {
+    public SimplifiedAccountEntityDTO createAccountEntity(AccountEntityRequestDTO request) {
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
 
@@ -75,7 +78,7 @@ public class AccountEntityService {
         accountEntity.setUpgradeStart(request.getUpgradeStart());
 
         AccountEntity savedAccountEntity = accountEntityRepository.save(accountEntity);
-        return accountEntityMapper.toDTO(savedAccountEntity);
+        return simplifiedAccountEntityMapper.toDTO(savedAccountEntity);
     }
 
     /**
@@ -83,10 +86,10 @@ public class AccountEntityService {
      *
      * @param id The ID of the account entity to update
      * @param request The AccountEntityRequestDTO containing the updated data
-     * @return An AccountEntityDTO representing the updated account entity
+     * @return A SimplifiedAccountEntityDTO representing the updated account entity
      * @throws IllegalArgumentException if the account entity, account, or base entity doesn't exist
      */
-    public AccountEntityDTO updateAccountEntity(Long id, AccountEntityRequestDTO request) {
+    public SimplifiedAccountEntityDTO updateAccountEntity(Long id, AccountEntityRequestDTO request) {
         AccountEntity accountEntity = accountEntityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("AccountEntity not found"));
 
@@ -102,7 +105,7 @@ public class AccountEntityService {
         accountEntity.setUpgradeStart(request.getUpgradeStart());
 
         AccountEntity updatedAccountEntity = accountEntityRepository.save(accountEntity);
-        return accountEntityMapper.toDTO(updatedAccountEntity);
+        return simplifiedAccountEntityMapper.toDTO(updatedAccountEntity);
     }
 
     /**
@@ -110,17 +113,17 @@ public class AccountEntityService {
      *
      * @param id The ID of the account entity to update
      * @param upgradeStart The new upgrade start time in milliseconds
-     * @return An AccountEntityDTO representing the updated account entity
+     * @return A SimplifiedAccountEntityDTO representing the updated account entity
      * @throws IllegalArgumentException if the account entity doesn't exist
      */
-    public AccountEntityDTO updateUpgradeStart(Long id, Integer upgradeStart) {
+    public SimplifiedAccountEntityDTO updateUpgradeStart(Long id, Integer upgradeStart) {
         AccountEntity accountEntity = accountEntityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("AccountEntity not found"));
 
         accountEntity.setUpgradeStart(upgradeStart);
 
         AccountEntity updatedAccountEntity = accountEntityRepository.save(accountEntity);
-        return accountEntityMapper.toDTO(updatedAccountEntity);
+        return simplifiedAccountEntityMapper.toDTO(updatedAccountEntity);
     }
 
     /**

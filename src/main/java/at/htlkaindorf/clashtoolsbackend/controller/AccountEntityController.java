@@ -3,6 +3,7 @@ package at.htlkaindorf.clashtoolsbackend.controller;
 import at.htlkaindorf.clashtoolsbackend.dto.ApiResponse;
 import at.htlkaindorf.clashtoolsbackend.dto.account.AccountEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.dto.account.AccountEntityRequestDTO;
+import at.htlkaindorf.clashtoolsbackend.dto.account.SimplifiedAccountEntityDTO;
 import at.htlkaindorf.clashtoolsbackend.service.AccountEntityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,14 +30,14 @@ public class AccountEntityController {
      * Get all account entities for a specific account.
      *
      * @param accountId The ID of the account to retrieve entities for
-     * @return ResponseEntity containing a list of AccountEntityDTO objects
+     * @return ResponseEntity containing a list of SimplifiedAccountEntityDTO objects
      */
     @GetMapping("/account/{accountId}")
     @Operation(summary = "Get all account entities for a specific account")
-    public ResponseEntity<ApiResponse<List<AccountEntityDTO>>> getAccEntitiesByAccountId(
+    public ResponseEntity<ApiResponse<List<SimplifiedAccountEntityDTO>>> getAccEntitiesByAccountId(
             @PathVariable Long accountId
     ) {
-        List<AccountEntityDTO> accountEntityDTOS = accountEntityService.getAllAccEntities(accountId);
+        List<SimplifiedAccountEntityDTO> accountEntityDTOS = accountEntityService.getAllAccEntities(accountId);
         return ResponseEntity.ok(ApiResponse.success(accountEntityDTOS));
     }
 
@@ -44,14 +45,14 @@ public class AccountEntityController {
      * Get a specific account entity by ID.
      *
      * @param id The ID of the account entity to retrieve
-     * @return ResponseEntity containing the requested AccountEntityDTO
+     * @return ResponseEntity containing the requested SimplifiedAccountEntityDTO
      */
     @GetMapping("/{id}")
     @Operation(summary = "Get a specific account entity by ID")
-    public ResponseEntity<ApiResponse<AccountEntityDTO>> getAccountEntityById(
+    public ResponseEntity<ApiResponse<SimplifiedAccountEntityDTO>> getAccountEntityById(
             @PathVariable Long id
     ) {
-        AccountEntityDTO accountEntityDTO = accountEntityService.getAccountEntityById(id);
+        SimplifiedAccountEntityDTO accountEntityDTO = accountEntityService.getAccountEntityById(id);
         return ResponseEntity.ok(ApiResponse.success(accountEntityDTO));
     }
 
@@ -59,14 +60,14 @@ public class AccountEntityController {
      * Create a new account entity.
      *
      * @param request The AccountEntityRequestDTO containing the data for the new account entity
-     * @return ResponseEntity containing the newly created AccountEntityDTO
+     * @return ResponseEntity containing the newly created SimplifiedAccountEntityDTO
      */
     @PostMapping
     @Operation(summary = "Create a new account entity")
-    public ResponseEntity<ApiResponse<AccountEntityDTO>> createAccountEntity(
+    public ResponseEntity<ApiResponse<SimplifiedAccountEntityDTO>> createAccountEntity(
             @Valid @RequestBody AccountEntityRequestDTO request
     ) {
-        AccountEntityDTO accountEntityDTO = accountEntityService.createAccountEntity(request);
+        SimplifiedAccountEntityDTO accountEntityDTO = accountEntityService.createAccountEntity(request);
         return ResponseEntity.ok(ApiResponse.success(accountEntityDTO, "Account entity created successfully"));
     }
 
@@ -75,15 +76,15 @@ public class AccountEntityController {
      *
      * @param id The ID of the account entity to update
      * @param request The AccountEntityRequestDTO containing the updated data
-     * @return ResponseEntity containing the updated AccountEntityDTO
+     * @return ResponseEntity containing the updated SimplifiedAccountEntityDTO
      */
     @PutMapping("/{id}")
     @Operation(summary = "Update an existing account entity")
-    public ResponseEntity<ApiResponse<AccountEntityDTO>> updateAccountEntity(
+    public ResponseEntity<ApiResponse<SimplifiedAccountEntityDTO>> updateAccountEntity(
             @PathVariable Long id,
             @Valid @RequestBody AccountEntityRequestDTO request
     ) {
-        AccountEntityDTO accountEntityDTO = accountEntityService.updateAccountEntity(id, request);
+        SimplifiedAccountEntityDTO accountEntityDTO = accountEntityService.updateAccountEntity(id, request);
         return ResponseEntity.ok(ApiResponse.success(accountEntityDTO, "Account entity updated successfully"));
     }
 
@@ -92,15 +93,15 @@ public class AccountEntityController {
      *
      * @param id The ID of the account entity to update
      * @param upgradeStart The new upgrade start time in milliseconds
-     * @return ResponseEntity containing the updated AccountEntityDTO
+     * @return ResponseEntity containing the updated SimplifiedAccountEntityDTO
      */
     @PatchMapping("/{id}/upgrade-start")
     @Operation(summary = "Update the upgrade start time for an account entity")
-    public ResponseEntity<ApiResponse<AccountEntityDTO>> updateUpgradeStart(
+    public ResponseEntity<ApiResponse<SimplifiedAccountEntityDTO>> updateUpgradeStart(
             @PathVariable Long id,
             @RequestParam Integer upgradeStart
     ) {
-        AccountEntityDTO accountEntityDTO = accountEntityService.updateUpgradeStart(id, upgradeStart);
+        SimplifiedAccountEntityDTO accountEntityDTO = accountEntityService.updateUpgradeStart(id, upgradeStart);
         return ResponseEntity.ok(ApiResponse.success(accountEntityDTO, "Upgrade start time updated successfully"));
     }
 
