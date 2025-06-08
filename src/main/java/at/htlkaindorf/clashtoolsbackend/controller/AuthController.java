@@ -82,7 +82,7 @@ public class AuthController {
 
         // Set access token as a cookie
         Cookie accessTokenCookie = new Cookie("access_token", newJwt);
-        accessTokenCookie.setHttpOnly(true); // Prevent JavaScript access for better security
+        accessTokenCookie.setHttpOnly(false); // Prevent JavaScript access for better security
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(3600); // 1 hour
         accessTokenCookie.setSecure(false); // Disabled secure cookies as requested
@@ -129,7 +129,7 @@ public class AuthController {
 
         // Set access token as a cookie
         Cookie accessTokenCookie = new Cookie("access_token", response.getAccessToken());
-        accessTokenCookie.setHttpOnly(true); // Prevent JavaScript access for better security
+        accessTokenCookie.setHttpOnly(false); // Prevent JavaScript access for better security
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(3600); // 1 hour
         accessTokenCookie.setSecure(false); // Disabled secure cookies as requested
