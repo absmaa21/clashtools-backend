@@ -63,7 +63,9 @@ public class SecurityConfig {
         config.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:8080")); // Specific origins
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Authorization", "Content-Type")); // Expose headers to the frontend
         config.setAllowCredentials(true); // Enable credentials for authenticated requests
+        config.setMaxAge(3600L); // Cache preflight requests for 1 hour to reduce OPTIONS requests
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

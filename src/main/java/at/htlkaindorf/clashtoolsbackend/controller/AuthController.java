@@ -82,9 +82,11 @@ public class AuthController {
 
         // Set access token as a cookie
         Cookie accessTokenCookie = new Cookie("access_token", newJwt);
-        accessTokenCookie.setHttpOnly(false); // Allow JavaScript access
+        accessTokenCookie.setHttpOnly(true); // Prevent JavaScript access for better security
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(3600); // 1 hour
+        accessTokenCookie.setSecure(true); // For HTTPS only
+        accessTokenCookie.setAttribute("SameSite", "None"); // For cross-origin requests
         httpServletResponse.addCookie(accessTokenCookie);
 
         AuthResponseDTO authResponse = new AuthResponseDTO(newJwt, request.getRefreshToken());
@@ -126,9 +128,11 @@ public class AuthController {
 
         // Set access token as a cookie
         Cookie accessTokenCookie = new Cookie("access_token", response.getAccessToken());
-        accessTokenCookie.setHttpOnly(false); // Allow JavaScript access
+        accessTokenCookie.setHttpOnly(true); // Prevent JavaScript access for better security
         accessTokenCookie.setPath("/");
         accessTokenCookie.setMaxAge(3600); // 1 hour
+        accessTokenCookie.setSecure(true); // For HTTPS only
+        accessTokenCookie.setAttribute("SameSite", "None"); // For cross-origin requests
         httpServletResponse.addCookie(accessTokenCookie);
 
         return ResponseEntity.ok(ApiResponse.success(response, "Login successful"));
