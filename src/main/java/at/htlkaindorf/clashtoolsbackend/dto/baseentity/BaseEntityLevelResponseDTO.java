@@ -2,6 +2,7 @@ package at.htlkaindorf.clashtoolsbackend.dto.baseentity;
 
 import at.htlkaindorf.clashtoolsbackend.dto.attribute.AttributeResponseDTO;
 import at.htlkaindorf.clashtoolsbackend.pojos.ResourceType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +27,9 @@ public class BaseEntityLevelResponseDTO {
 
     /**
      * The base entity that this level belongs to.
+     * JsonIgnoreProperties is used to prevent infinite recursion during serialization.
      */
+    @JsonIgnoreProperties("baseEntityLevels")
     private BaseEntityResponseDTO baseEntity;
 
     /**
