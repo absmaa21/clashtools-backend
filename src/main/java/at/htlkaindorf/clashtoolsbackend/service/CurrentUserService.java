@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class CurrentUserService {
 
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     /**
      * Gets the currently authenticated user.
@@ -23,13 +24,8 @@ public class CurrentUserService {
      * @return The User entity of the currently authenticated user
      * @throws IllegalStateException if no authenticated user is found
      */
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("No authenticated user found");
-        }
-
-        String username = authentication.getName();
+    public User getCurrentUser(String accessToken) {
+        String username = jwtService.extractUsername(accessToken);
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
     }
@@ -40,7 +36,7 @@ public class CurrentUserService {
      * @return The ID of the currently authenticated user
      * @throws IllegalStateException if no authenticated user is found
      */
-    public Long getCurrentUserId() {
-        return getCurrentUser().getId();
+    public Long getCurrentUserId(String accessToken) {
+        return getCurrentUser(accessToken).getId();
     }
 }

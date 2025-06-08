@@ -5,7 +5,9 @@ import at.htlkaindorf.clashtoolsbackend.service.CurrentUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for retrieving information about the currently authenticated user.
  * Provides endpoints to demonstrate how to access user information.
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/user-info")
 @RequiredArgsConstructor
@@ -29,8 +32,10 @@ public class UserInfoController {
      */
     @GetMapping("/current-user-id")
     @Operation(summary = "Get current user ID", description = "Retrieves the ID of the currently authenticated user using CurrentUserService")
-    public ResponseEntity<ApiResponse<Long>> getCurrentUserId() {
-        Long userId = currentUserService.getCurrentUserId();
+    public ResponseEntity<ApiResponse<Long>> getCurrentUserId(
+            @CookieValue("access_token") String accessToken
+    ) {
+        Long userId = currentUserService.getCurrentUserId(accessToken);
         return ResponseEntity.ok(ApiResponse.success(userId, "Current user ID retrieved successfully"));
     }
 }
